@@ -1,0 +1,13 @@
+<div class="ADMdtp-container" ng-class="{rtf: (calType=='jalali')}">
+    <div class="clickOutContainer" click-out="closeCalendar()">
+        <div class="input-group masterInput">
+            <div class="input-group-addon iconContainer" ng-click="destroy()">
+                <i class="glyphicon glyphicon-unchecked fakeIcon"></i>
+                <i class="glyphicon glyphicon-calendar calendarIcon"></i>
+                <i class="glyphicon glyphicon-remove removeIcon"></i>
+            </div>
+            <input my-calendar type="text" class="form-control" ng-model="dtpValue.formated" ng-click="openCalendar($event)" ng-blur="modelChanged()">
+        </div>
+        
+    </div>
+</div>
