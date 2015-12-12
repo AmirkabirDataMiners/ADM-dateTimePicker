@@ -146,15 +146,15 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
     <div class="row">
         <div class="col-xs-12 col-sm-4">
            From:
-            <adm-dtp ng-model="date4" full-data="date4_full"  maxdate="{{date5_full.unix}}" />
+            <adm-dtp ng-model="date4" full-data="date4_full"  maxdate="{{date5_full.unix}}"></adm-dtp>
         </div>
         <div class="col-xs-12 col-sm-4">
            To:
-            <adm-dtp ng-model="date5" options="{calType:'jalali'}" full-data="date5_full" mindate="{{date4_full.unix}}"  />
+            <adm-dtp ng-model="date5" options="{calType:'jalali'}" full-data="date5_full" mindate="{{date4_full.unix}}"></adm-dtp>
         </div>
         <div class="col-xs-12 col-sm-4">
            From - To:
-            <adm-dtp ng-model="date6" full-data="date6_full" mindate="{{date4_full.unix}}" maxdate="{{date5_full.unix}}" />
+            <adm-dtp ng-model="date6" full-data="date6_full" mindate="{{date4_full.unix}}" maxdate="{{date5_full.unix}}"></adm-dtp>
         </div>
     </div>
     
@@ -200,7 +200,7 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
 
 <footer>
     <a class="footerLogo" href="https://adm-co.net">
-        <img src="../../images/admLogo.svg" alt="Amirkabir Data Miners Logo">
+        <img src="images/admLogo.svg" alt="Amirkabir Data Miners Logo">
         Amirkabir Data Miners
     </a>
 </footer>

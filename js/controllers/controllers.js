@@ -1,7 +1,6 @@
 var app = angular.module('app', [
     'ngRoute',
     'appControllers',
-    'ngAnimate',
     'hljs',
     'ADM-dateTimePicker'
 ]);
@@ -19,7 +18,7 @@ app.config(['$routeProvider', 'ADMdtpProvider',
                 controller: 'homeControllers'
             });
  
-        ADMdtp.setOptions({}); //gregorian jalali
+        ADMdtp.setOptions({});
         
     }
 ]).run(function(ADMdtp) {
