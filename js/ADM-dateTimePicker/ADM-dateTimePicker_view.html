@@ -1,13 +1,55 @@
-<div class="ADMdtp-container" ng-class="{rtf: (calType=='jalali')}">
+<div class="ADMdtp-container" ng-class="{rtf: (calType=='jalali'), touch: option.isDeviceTouch, disable: disable}">
     <div class="clickOutContainer" click-out="closeCalendar()">
-        <div class="input-group masterInput">
-            <div class="input-group-addon iconContainer" ng-click="destroy()">
+        <div class="input-group masterInput" ng-class="{touch: option.isDeviceTouch, disable: disable, open: showCalendarStat}">
+            <div class="input-group-addon iconContainer" ng-click="(option.isDeviceTouch)?toggleCalendar():destroy()">
                 <i class="glyphicon glyphicon-unchecked fakeIcon"></i>
                 <i class="glyphicon glyphicon-calendar calendarIcon"></i>
                 <i class="glyphicon glyphicon-remove removeIcon"></i>
+                <i class="glyphicon glyphicon-off closeIcon"></i>
             </div>
-            <input my-calendar type="text" class="form-control" ng-model="dtpValue.formated" ng-click="openCalendar($event)" ng-blur="modelChanged()">
+            <input type="text" class="form-control" ng-model="dtpValue.formated" ng-click="openCalendar()" ng-disabled="option.isDeviceTouch || disable" ng-blur="modelChanged()">
+            <i class="glyphicon glyphicon-remove removeIcon" ng-if="dtpValue.formated" ng-click="destroy()"></i>
         </div>
-        
     </div>
+    
+    <script type="text/ng-template" id="ADM-dateTimePicker_calendar.html">
+        <div class="ADMdtp-calendar-container">
+            <header>
+                <span class="glyphicon glyphicon-menu-left" ng-click="previousMonth()"></span>
+                <span class="yearMonth">{{current.monthDscr +" "+ current.year}}</span>
+                <span class="glyphicon glyphicon-menu-right" ng-click="nextMonth()"></span>
+            </header>
+            <div class="daysNames">
+                <span ng-repeat="name in daysNames">{{name}}</span>
+            </div>
+            <hr>
+            <div class="days" ng-class="{loading:loadingDays}">
+                <span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, notValid:!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType=='jalali')?'max':'min'):'', (day.isMax)?((calType=='jalali')?'min':'max'):'']">{{day.day}}</span></span>
+            </div>
+            <hr>
+            <footer>
+                <div class="calTypeContainer" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple">
+                    <p class="gregorian">Gregorian</p>
+                    <p class="jalali">جلالی</p>
+                </div>
+
+                <button class="today" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button>
+            </footer>
+            <div class="timePickerContainer" ng-class="{active: timePickerStat}">
+                <span class="glyphicon timeSelectIcon" ng-class="(timePickerStat)?'glyphicon-menu-down':'glyphicon-time'" ng-click="timePickerStat = !timePickerStat"></span>
+                <div class="timePicker">
+                    <span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue('hour', 1)"></span><!--
+                    --><span></span><!--
+                    --><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue('minute', 1)"></span><!--
+                    --><span>{{time.hour}}</span><!--
+                    --><span class="period">:</span><!--
+                    --><span>{{time.minute}}</span><!--
+                    --><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue('hour', -1)"></span><!--
+                    --><span></span><!--
+                    --><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue('minute', -1)"></span>
+                </div>
+            </div>
+        </div>
+
+    </script>
 </div>

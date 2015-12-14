@@ -62,49 +62,129 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
             <h3>Example:</h3>
         </div>
         <div class="col-xs-12 col-sm-6">
+            Gregorian - YYYY/MM/DD HH:MM
             <adm-dtp ng-model="date1" options='{default: 1450197600000}'></adm-dtp>
         </div>
         <div class="col-xs-12 col-sm-6">
+            Jalali - YYYY/MM/DD
             <adm-dtp ng-model="date2" options='{calType: "jalali", format: "YYYY/MM/DD", default: 1450197600000}'></adm-dtp>
         </div>
     </div>
     <br>
-    <h3>Available options</h3>
+    <h3>Quick look</h3>
     
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Default</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="item in availableOptions">
-                <td>{{item.name}}</td>
-                <td>{{item.type}}</td>
-                <td>{{item.default}}</td>
-                <td ng-bind-html="item.description"></td>
-            </tr>
-        </tbody>
-    </table>
-
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in availableOptions">
+                    <td>{{item.name}}</td>
+                    <td>{{item.type}}</td>
+                    <td>{{item.default}}</td>
+                    <td ng-bind-html="item.description"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <br>
+    <h2><strong>Disabling days</strong></h2>
+    <hr>
+    <h3>Disable pecific days</h3>
+    
+<div hljs class="customCode">
+<!-- it accept both unix and string date -->
+<adm-dtp ng-model='date' options="disabled:['2016/1/20', 1453408200000]"></adm-dtp>
+</div>  
+   
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12">
+            <adm-dtp ng-model='date10' options="{default:'2016/1/1', disabled:['2016/1/20', 1453408200000]}" ></adm-dtp>
+        </div>
+    </div>
+    <br>
+    <h3>Disable with pattern</h3>
+    <h4>Currently two types of patterns are availble:</h4>
+    <ul>
+        <li>
+            <strong>Days in a week: </strong><pre class="inline">i+[NUM]</pre>
+            <ul>
+                <li><pre class="inline"><strong>i</strong></pre> -> will disable all Sundays in Gregorain calendar or Saturdays in Jalali calendars</li>
+                <li><pre class="inline"><strong>i+6</strong></pre> -> will disable all Saturdays in Gregorain calendar or Fridays in Jalali calendars</li>
+                <li>...</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Days in a month: </strong><pre class="inline">[NUM]d+[NUM]</pre>
+            <ul>
+                <li><pre class="inline"><strong>d+1</strong></pre> -> will disable the second day of all months</li>
+                <li><pre class="inline"><strong>2d</strong></pre> -> will disable the even days of all months</li>
+                <li><pre class="inline"><strong>2d+1</strong></pre> -> will disable the odd days of all months</li>
+                <li>...</li>
+            </ul>
+        </li>
+    </ul>
+    <br>
+    <h4><strong>Inverse disabling:</strong></h4>
+    putting <strong>Exclamation mark (!)</strong> at the begining of the pattern will inverse disabling pattern:
+    <ul>
+        <li><pre class="inline"><strong>!i+6</strong></pre> -> just Saturdays in Gregorain calendar or Fridays in Jalali calendars are available</li>
+        <li><pre class="inline"><strong>!2d+1</strong></pre> -> it's exactly like <pre class="inline">2d</pre></li>
+    </ul>
+    <br>
+    <h4><strong>Combine patterns:</strong></h4>
+    patterns of the same type can be combine with <strong>Ampersand (&)</strong>. <br>
+    mention that <pre class="inline">['2d+1', '7d']</pre> and <pre class="inline">['2d+1&7d']</pre> are equal, but <pre class="inline">['!2d+1', '!7d']</pre> and <pre class="inline">['!2d+1&7d']</pre> are completely differents.
+    <br>
+    <br>
+    <h4><strong>Smart disabling:</strong></h4>
+    <pre class="inline">i</pre> in Gregorian calendar will disable Sundays (weekend) that is equal to Fridays (weekend) in Jalali calendar. <br>
+    option <pre class="inline">smartDisabling: true</pre> change Sunday from Gregorian calendar to Friday in Jalali calendar by switching calendar type,<br>
+    but <pre class="inline">smartDisabling: false</pre> makes no different.
+    <br><br>
+<div hljs no-escape class="customCode">
+&lt;adm-dtp ng-model='date' options="disabled:['2016/1/20', '!i&amp;i+1', '15d+2']"&gt;&lt;/adm-dtp&gt;
+</div> 
+       
+   <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            disable weekends - <pre class="inline">i&i+6</pre>
+            <adm-dtp ng-model="date1" options='{default: "2016/1/20", disabled: ["i&i+6"]}'></adm-dtp>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            only weekends - <pre class="inline">!i&i+6</pre>
+            <adm-dtp ng-model="date2" options='{default: "2016/1/20", disabled: ["!i&i+6"]}'></adm-dtp>
+        </div>
+    </div>
     <br>
     <h2><strong>Full data</strong></h2>
     <hr>
-    <h5>Beside ngModel you can access to date full details throw <strong>full-data</strong> attribute.</h5>
+    <h5>Beside ngModel you can access to date full details throw <pre class="inline"><strong>full-data</strong></pre> attribute.</h5>
     
 <div hljs class="customCode">
 <adm-dtp ng-model='date' full-data='date_details'></adm-dtp>
 </div>   
     
-<h5><strong>date_details</strong> contains following parameters:</h5>
+<h5><pre class="inline"><strong>date_details</strong></pre> contains following parameters:</h5>
 
-<div hljs class="customCode">
+<div hljs hljs-language="javascript" class="customCode">
 {
     formated: "2015/12/15",
-    fullDate: "2015-12-15T16:40:00.000Z",
+    gDate: 2015-12-15T16:40:00.000Z,
+    //gDate is Date format of selected date in Gregorian calendar
     unix: 1450197600000,
     year: 2015,
     month: 12,
@@ -130,7 +210,10 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
    
     <div class="row">
         <div class="col-xs-12">
-            <adm-dtp ng-model='date' options="{default:'2015/12/15'}" mindate="1449866902553" maxdate="'2015/12/17'"></adm-dtp>
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12">
+            <adm-dtp ng-model='date3' options="{default:'2015/12/15'}" mindate="1449866902553" maxdate="'2015/12/17'"></adm-dtp>
         </div>
     </div>
     
@@ -144,6 +227,9 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
 </div> 
     
     <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
         <div class="col-xs-12 col-sm-4">
            From:
             <adm-dtp ng-model="date4" full-data="date4_full"  maxdate="{{date5_full.unix}}"></adm-dtp>
@@ -155,6 +241,32 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
         <div class="col-xs-12 col-sm-4">
            From - To:
             <adm-dtp ng-model="date6" full-data="date6_full" mindate="{{date4_full.unix}}" maxdate="{{date5_full.unix}}"></adm-dtp>
+        </div>
+    </div>
+    
+    <br>
+    <h2><strong>Disabling ADMdtp</strong></h2>
+    <hr>
+<div hljs no-escape class="customCode">
+&lt;!-- disable permanently --&gt;
+&lt;adm-dtp ng-model='date' disable='true'&gt;&lt;/adm-dtp&gt;
+
+&lt;!-- disable dynamicly --&gt;
+&lt;adm-dtp ng-model='date1' &gt;&lt;/adm-dtp&gt;
+&lt;adm-dtp ng-model='date2' disable='{{!date1}}'&gt;&lt;/adm-dtp&gt;
+</div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            Select date to enable next input
+            <adm-dtp ng-model="date7"></adm-dtp>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            I'm <strong>{{(date7)?'enable':'disable'}}</strong>
+            <adm-dtp ng-model="date8" disable="{{!date7}}"></adm-dtp>
         </div>
     </div>
     
@@ -187,7 +299,7 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
             <h3>Example:</h3>
         </div>
         <div class="col-xs-12">
-            <adm-dtp ng-model="date3" on-open="testOpen()" on-close="testClose()" on-change="testChange(date)" on-timechange="testTimeChange(date)" on-datechange="testDateChange(date)"></adm-dtp>
+            <adm-dtp ng-model="date9" on-open="testOpen()" on-close="testClose()" on-change="testChange(date)" on-timechange="testTimeChange(date)" on-datechange="testDateChange(date)"></adm-dtp>
             <br>
             <blockquote>
                 <p><strong>Messages:</strong></p>

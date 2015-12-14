@@ -16,7 +16,11 @@
         var options = {
             calType: 'gregorian',
             format: 'YYYY/MM/DD HH:MM', 
-            multiple: true
+            multiple: true,
+            autoClose: false,
+            transition: true,
+            disabled: [],
+            smartDisabling: true
         };
 
         var ADMdtp = {
@@ -547,6 +551,115 @@
                 return angular.extend(ADMdtpConvertor.toJalali(date.year, date.month, date.day), {unix: date.unix});
             }
         };
+        this.parseDisablePattern = function(arr, smart, calType) {
+            var _inWeek = Array.apply(null, Array(7)).map(Number.prototype.valueOf,0);
+            var _inMonth = Array.apply(null, Array(31)).map(Number.prototype.valueOf,0);
+            var _static = {};
+            
+            if (arr instanceof Array) {
+                for (var i=0,j=arr.length; i<j; i++) {
+                    if (typeof arr[i] == "number") {
+                        var _gDate = new Date(arr[i]);
+                        if (_gDate != 'Invalid Date')
+                            _static[this.removeTime(_gDate).getTime()] = true;
+                    }
+                    else if (typeof arr[i] == "string") {
+                        arr[i] = arr[i].toLowerCase();
+                        if (arr[i].indexOf('d') == -1 && arr[i].indexOf('i') == -1) {
+                            var _unix = this.convertToUnix(arr[i], calType);
+                            if (_unix)
+                                _static[_unix] = true;
+                        }
+                        else {
+                            var _inMonthValid = new RegExp("^[!]?(([0-9]?[0-9])?[d]([+][0-9][0-9]?)?)([&]([0-9]?[0-9])?[d]([+][0-9][0-9]?)?)*?$").test(arr[i]);
+                            var _inWeekhValid = new RegExp("^[!]?([i]([+][0-9][0-9]?)?)([&][i]([+][0-9][0-9]?)?)*?$").test(arr[i]);
+                            
+                            if (_inMonthValid || _inWeekhValid) {
+                                debugger;
+                                var _not = arr[i][0]=='!';
+                                arr[i] = _not?arr[i].split('!')[1]:arr[i];
+                                var _patt = arr[i].split('&');
+                                
+                                if (_inMonthValid) {
+                                    var _tmpObj = {};
+                                    _patt.forEach(function(item) {
+                                        var _params = item.split(/d[+]?/).map(function(str) {return Number(str);});
+                                        _params[0] = _params[0]?_params[0]:1;
+                                        _params[1]%=31;
+
+                                        for (var k=0; k<31; k++) {
+                                            if (_params[0]!=1 && k%_params[0] == _params[1] || _params[0]==1 && k==_params[1])
+                                                _tmpObj[k] = 1;
+                                        }
+                                    });
+                                    for (var k=0; k<31; k++) {
+                                        if (_not) {
+                                            if (!_tmpObj[k])
+                                                _inMonth[k] = 1;
+                                        }
+                                        else {
+                                            if (_tmpObj[k])
+                                                _inMonth[k] = 1;
+                                        }
+                                    }
+                                }
+                                else if (_inWeekhValid) {
+                                    var _tmpObj = {};
+                                    _patt.forEach(function(item) {
+                                        var _params = item.split(/i[+]?/).map(function(str) {return Number(str);});
+                                        _params[1]%=7;
+                                        _tmpObj[_params[1]] = 1;
+                                    });
+                                    for (var k=0; k<7; k++) {
+                                        if (_not) {
+                                            if (!_tmpObj[k])
+                                                _inWeek[k] = 1;
+                                        }
+                                        else {
+                                            if (_tmpObj[k])
+                                                _inWeek[k] = 1;
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                            else {
+                                console.warn(arr[i] + " is not valid!");
+                            }
+                        }
+                    }
+                }
+            }
+            //console.info(_inMonth);
+            return {smart: smart, calType: calType, static: _static, inWeek: _inWeek, inMonth: _inMonth};
+        }
+        this.isDayDisable = function(calType, disabled, day) {
+            if (disabled.static[day.unix])
+                return true;
+            
+            var _gap = 0;
+            
+            if (disabled.smart) {
+                if (disabled.calType=='gregorian' && calType=='jalali')
+                    _gap = +1;
+                else if (disabled.calType=='jalali' && calType=='gregorian')
+                    _gap = -1;
+            }
+            else {
+                if (disabled.calType=='gregorian' && calType=='jalali')
+                    _gap = -1;
+                else if (disabled.calType=='jalali' && calType=='gregorian')
+                    _gap = +1;
+            }
+                
+            
+            var _dayName = (day.dayName + 7 + _gap)%7;
+            
+            if (disabled.inMonth[day.day-1])
+                return true;
+            
+            return !!+disabled.inWeek[_dayName];
+        }
         
         return {
             leadingZero: this.leadingZero,
@@ -561,7 +674,9 @@
             validateJalaliDate: this.validateJalaliDate,
             convertToUnix: this.convertToUnix,
             convertFromUnix: this.convertFromUnix,
-            convertToJalali: this.convertToJalali
+            convertToJalali: this.convertToJalali,
+            parseDisablePattern: this.parseDisablePattern,
+            isDayDisable: this.isDayDisable
         }
     }
 
@@ -584,7 +699,7 @@
                 if (scope.calType == 'jalali')
                     _standValue = ADMdtpFactory.convertToJalali(_standValue);
                 
-                admDtp.fillDays(_standValue);
+                admDtp.fillDays(_standValue, !scope.option.transition);
 
                 scope.previousMonth = function(flag) {
                     if (scope.calType == 'jalali' && !flag) {
@@ -623,6 +738,12 @@
                     
                     admDtp.updateMasterValue(day, 'day');
                     
+                    if (scope.option.autoClose) {
+                        scope.closeCalendar();
+                        return;
+                    }
+                        
+                    
                     if (day.disable) {
                         $timeout(function() {
                             if (ADMdtpFactory.isMonthBigger(day, scope.current))
@@ -640,7 +761,7 @@
                     if (scope.calType == 'jalali')
                         _standValue = ADMdtpFactory.convertToJalali(_standValue);
 
-                    admDtp.fillDays(_standValue);
+                    admDtp.fillDays(_standValue, !scope.option.transition);
                 }
 
                 scope.changeTimeValue = function(variable, value) {
@@ -684,7 +805,7 @@
                     if (scope.calType == 'jalali')
                         _gDate = ADMdtpFactory.convertToJalali(_gDate);
                     
-                    admDtp.fillDays(_gDate);
+                    admDtp.fillDays(_gDate, !scope.option.transition);
                     
                 }
                 
@@ -733,6 +854,7 @@
             scope: {
                 options: '=',
                 fullData: '=',
+                ngDisabled: '=',
                 onChange: '&',
                 onDatechange: '&',
                 onTimechange: '&',
@@ -745,6 +867,7 @@
                 if (!(_options instanceof Object))
                     _options = {};
                 scope.option = angular.extend(angular.copy(ADMdtp.getOptions()), _options);
+                scope.disableDays = ADMdtpFactory.parseDisablePattern(scope.option.disabled, scope.option.smartDisabling, scope.option.calType);
                 scope.calType = scope.option.calType;
                 scope.month = constants.calendars[scope.calType].monthsNames;
                 scope.daysNames = constants.calendars[scope.calType].daysNames;
@@ -772,7 +895,7 @@
                         scope.dtpValue.fullDate = ADMdtpFactory.joinTime(newDate.unix, scope.time);
                         scope.fullData = {
                             formated: scope.dtpValue.formated,
-                            fullDate: scope.dtpValue.fullDate,
+                            gDate: scope.dtpValue.fullDate,
                             unix: scope.dtpValue.fullDate.getTime(),
                             year: newDate.year,
                             month: newDate.month,
@@ -843,11 +966,17 @@
                 }
                 scope.parseInputValue(scope.option.default || ngModel.$viewValue, true, false);
                 
+                attrs.$observe("disable", function (_newVal) {
+                    scope.$applyAsync(function() {
+                        _newVal = scope.$eval(_newVal);
+                        scope.disable = _newVal;
+                    });
+                });
+                
                 attrs.$observe("mindate", function (_newVal) {
                     scope.$applyAsync(function() {
                         _newVal = scope.$eval(_newVal);
                         scope.minDate = ADMdtpFactory.convertToUnix(_newVal, scope.calType);
-                        //console.info(scope.minDate);
                     });
                 });
                 
@@ -855,14 +984,14 @@
                     scope.$applyAsync(function() {
                         _newVal = scope.$eval(_newVal);
                         scope.maxDate = ADMdtpFactory.convertToUnix(_newVal, scope.calType);
-                        //console.info(scope.maxDate)
                     });
                 });
                 
                 
                 
-                scope.openCalendar = function(event) {
-                    if (scope.showCalendarStat)
+                scope.openCalendar = function() {
+                    
+                    if (scope.showCalendarStat || scope.disable)
                         return;
                     
                     scope.timeoutValue[0] = 0;
@@ -909,12 +1038,25 @@
 //                            _pos.top = _pos.top - (_totalSize.height - _docSize.height);
 //                        }
                         //console.info(_totalSize.width, window.innerWidth, _elementBound.width, _corner.x);
+                        
                         var _pos = {
-                            top: (_totalSize.height > window.innerHeight)?(_inputBound.top-_elementBound.height):_corner.y,
-                            left: (_totalSize.width > window.innerWidth)?(window.innerWidth-_elementBound.width-20):_corner.x
+                            top: '',
+                            bottom: '',
+                            left: '',
+                            right: ''
                         }
+                        if (_totalSize.height > window.innerHeight)
+                            _pos.bottom = _inputBound.height + 'px';
+                        else
+                            _pos.top = _inputBound.height + 'px';
+                            
+                        if (_totalSize.width > window.innerWidth)
+                            _pos.left = (window.innerWidth - _totalSize.width - 20) + 'px';
+                        else
+                            _pos.left = 0;
+                        
                         //console.info(_pos);
-                        angular.element(_element).css({top: _pos.top + 'px', left: _pos.left + 'px', opacity: 1});
+                        angular.element(_element).css({top: _pos.top, bottom: _pos.bottom, left: _pos.left, opacity: 1});
                         
                     }, 70);
                     
@@ -934,8 +1076,18 @@
                     }
                     
                 }
+                
+                scope.toggleCalendar = function() {
+                    if (scope.showCalendarStat)
+                        scope.closeCalendar();
+                    else
+                        scope.openCalendar();
+                }
 
                 scope.destroy = function() {
+                    if (scope.disable)
+                        return;
+                    
                     scope.current = {
                         year: '',
                         month: '',
@@ -959,7 +1111,7 @@
                     ngModel.$setViewValue('');
                     ngModel.$render();
                     
-                    scope.fillDays(_standValue);
+                    scope.fillDays(_standValue, !scope.option.transition);
                     
                     if (scope.onChange)
                         scope.onChange({date:scope.fullData});
@@ -1064,11 +1216,13 @@
                                 }
 
                                 var _unix = _ite_date.getTime();
+                                var _dayName = _ite_date.getDay() + (($scope.calType=='jalali')?1:0);
 
                                 var _day = {
                                     day: _thisDay,
                                     month: _pDate.month || _ite_date.getMonth()+1,
                                     year: _pDate.year || _ite_date.getFullYear(),
+                                    dayName: _dayName,
                                     fullDate: _ite_date,
                                     disable: _disable,
                                     today: (_unix == _today),
@@ -1077,7 +1231,9 @@
                                     valid: _valid,
                                     isMin: _isMin
                                 }
-
+                                
+                                if (ADMdtpFactory.isDayDisable($scope.calType, $scope.disableDays, _day))
+                                    _day.valid = 0;
 
                                 if (_day.selected)
                                     _selectedIdx = _days.length;
@@ -1109,14 +1265,14 @@
                         var _date = new Date(_cur.year, _cur.month-1, 8);
                         if ($scope.calType == 'jalali')
                             _date = _cur;
-                        this.fillDays(_date);
+                        this.fillDays(_date, !$scope.option.transition);
                     }
                     
                     $scope.fillDays = this.fillDays;
                 }
             ],
             //templateUrl: 'js/ADM-dateTimePicker/ADM-dateTimePicker_view.html'
-            template: '<div class="ADMdtp-container" ng-class="{rtf: (calType==\'jalali\')}"><div class="clickOutContainer" click-out="closeCalendar()"><div class="input-group masterInput"><div class="input-group-addon iconContainer" ng-click="destroy()"><i class="glyphicon glyphicon-unchecked fakeIcon"></i><i class="glyphicon glyphicon-calendar calendarIcon"></i><i class="glyphicon glyphicon-remove removeIcon"></i></div><input type="text" class="form-control" ng-model="dtpValue.formated" ng-click="openCalendar($event)" ng-blur="modelChanged()"></div></div> <script type="text/ng-template" id="ADM-dateTimePicker_calendar.html"><div class="ADMdtp-calendar-container"><header><span class="glyphicon glyphicon-menu-left" ng-click="previousMonth()"></span><span class="yearMonth">{{current.monthDscr +" "+ current.year}}</span><span class="glyphicon glyphicon-menu-right" ng-click="nextMonth()"></span></header><div class="daysNames"><span ng-repeat="name in daysNames">{{name}}</span></div><hr><div class="days" ng-class="{loading:loadingDays}"><span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType==\'jalali\')?\'max\':\'min\'):\'\', (day.isMax)?((calType==\'jalali\')?\'min\':\'max\'):\'\']">{{day.day}}</span></span></div><hr><footer><div class="calTypeContainer" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple"><p class="gregorian">Gregorian</p><p class="jalali">جلالی</p></div><button class="today" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button></footer><div class="timePickerContainer" ng-class="{active: timePickerStat}"><span class="glyphicon timeSelectIcon" ng-class="(timePickerStat)?\'glyphicon-menu-down\':\'glyphicon-time\'" ng-click="timePickerStat = !timePickerStat"></span><div class="timePicker"><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'hour\', 1)"></span><!----><span></span><!----><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'minute\', 1)"></span><!----><span>{{time.hour}}</span><!----><span class="period">:</span><!----><span>{{time.minute}}</span><!----><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'hour\', -1)"></span><!----><span></span><!----><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'minute\', -1)"></span></div></div></div></script> </div>'
+            template: '<div class="ADMdtp-container" ng-class="{rtf: (calType==\'jalali\'), touch: option.isDeviceTouch, disable: disable}"><div class="clickOutContainer" click-out="closeCalendar()"><div class="input-group masterInput" ng-class="{touch: option.isDeviceTouch, disable: disable, open: showCalendarStat}"><div class="input-group-addon iconContainer" ng-click="(option.isDeviceTouch)?toggleCalendar():destroy()"><i class="glyphicon glyphicon-unchecked fakeIcon"></i><i class="glyphicon glyphicon-calendar calendarIcon"></i><i class="glyphicon glyphicon-remove removeIcon"></i><i class="glyphicon glyphicon-off closeIcon"></i></div><input type="text" class="form-control" ng-model="dtpValue.formated" ng-click="openCalendar()" ng-disabled="option.isDeviceTouch || disable" ng-blur="modelChanged()"><i class="glyphicon glyphicon-remove removeIcon" ng-if="dtpValue.formated" ng-click="destroy()"></i></div></div><script type="text/ng-template" id="ADM-dateTimePicker_calendar.html"><div class="ADMdtp-calendar-container"><header><span class="glyphicon glyphicon-menu-left" ng-click="previousMonth()"></span><span class="yearMonth">{{current.monthDscr +" "+ current.year}}</span><span class="glyphicon glyphicon-menu-right" ng-click="nextMonth()"></span></header><div class="daysNames"><span ng-repeat="name in daysNames">{{name}}</span></div><hr><div class="days" ng-class="{loading:loadingDays}"><span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, notValid:!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType==\'jalali\')?\'max\':\'min\'):\'\', (day.isMax)?((calType==\'jalali\')?\'min\':\'max\'):\'\']">{{day.day}}</span></span></div><hr><footer><div class="calTypeContainer" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple"><p class="gregorian">Gregorian</p><p class="jalali">جلالی</p></div><button class="today" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button></footer><div class="timePickerContainer" ng-class="{active: timePickerStat}"><span class="glyphicon timeSelectIcon" ng-class="(timePickerStat)?\'glyphicon-menu-down\':\'glyphicon-time\'" ng-click="timePickerStat = !timePickerStat"></span><div class="timePicker"><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'hour\', 1)"></span><!----><span></span><!----><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'minute\', 1)"></span><!----><span>{{time.hour}}</span><!----><span class="period">:</span><!----><span>{{time.minute}}</span><!----><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'hour\', -1)"></span><!----><span></span><!----><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'minute\', -1)"></span></div></div></div></script></div>'
         };
     }
     
@@ -1157,6 +1313,19 @@
             }
         };
     }
+    
+    var ADMdtpConfig = function(ADMdtp) {
+        try {  
+            document.createEvent("TouchEvent");  
+            ADMdtp.setOptions({isDeviceTouch: true});
+        } catch (e) {  
+            ADMdtp.setOptions({isDeviceTouch: false});
+        } 
+    }
+    
+    var ADMdtpRun = function(ADMdtp) {
+        console.info(ADMdtp.getOptions());
+    }
 
     return angular.module('ADM-dateTimePicker', [])
         .constant('constants', {
@@ -1176,5 +1345,7 @@
         .factory('ADMdtpFactory', ['ADMdtpConvertor', '$timeout', ADMdtpFactory])
         .directive('admDtp', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$compile', '$timeout', '$document', ADMdtpDirective])
         .directive('admDtpCalendar', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$timeout', ADMdtpCalendarDirective])
-        .directive('clickOut', ['$document', clickOutside]);
+        .directive('clickOut', ['$document', clickOutside])
+        .config(['ADMdtpProvider', ADMdtpConfig])
+        .run(ADMdtpRun);
 }(window.angular));

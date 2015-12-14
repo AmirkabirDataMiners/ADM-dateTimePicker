@@ -1,7 +1,7 @@
 <div class="ADMdtp-calendar-container">
     <header>
         <span class="glyphicon glyphicon-menu-left" ng-click="previousMonth()"></span>
-        <span class="yearMonth">{{current.monthDscr +' '+ current.year}}</span>
+        <span class="yearMonth">{{current.monthDscr +" "+ current.year}}</span>
         <span class="glyphicon glyphicon-menu-right" ng-click="nextMonth()"></span>
     </header>
     <div class="daysNames">
@@ -13,20 +13,15 @@
     </div>
     <hr>
     <footer>
-<!--
-        <input type="radio" ng-model="$parent.calType" value="jalali" ng-change="calTypeChanged()" ng-if="option.multiple">
-        <input type="radio" ng-model="$parent.calType" value="gregorian" ng-change="calTypeChanged()" ng-if="option.multiple">
--->
         <div class="calTypeContainer" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple">
             <p class="gregorian">Gregorian</p>
             <p class="jalali">جلالی</p>
         </div>
         
-        <button class="today" ng-click="today()">{{(calType=='jalali')?'امروز':'Today'}}</button>
+        <button class="today" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button>
     </footer>
     <div class="timePickerContainer" ng-class="{active: timePickerStat}">
         <span class="glyphicon timeSelectIcon" ng-class="(timePickerStat)?'glyphicon-menu-down':'glyphicon-time'" ng-click="timePickerStat = !timePickerStat"></span>
-<!--        <i class="fa timeSelectIcon" ng-class="(timePickerStat)?'fa-chevron-down':'fa-clock-o'" ng-click="timePickerStat = !timePickerStat"></i>-->
         <div class="timePicker">
             <span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue('hour', 1)"></span><!--
             --><span></span><!--
