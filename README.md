@@ -1,4 +1,4 @@
-# [ADM-dateTimePicker](http://http://amirkabirdataminers.github.io/ADM-dateTimePicker)
+# [ADM-dateTimePicker](https://amirkabirdataminers.github.io/ADM-dateTimePicker)
 *Pure AngularJs Gregorian and Jalali smart date &amp; time picker by [ADM | Amirkabir Data Miners](https://adm-co.net)*
 
 ### KeyWords  
@@ -7,7 +7,7 @@
 ---
 
 ### Demo  
-See ADMdtp live [HERE](http://http://amirkabirdataminers.github.io/ADM-dateTimePicker).
+See ADMdtp live [HERE](https://amirkabirdataminers.github.io/ADM-dateTimePicker).
 
 ---
 
