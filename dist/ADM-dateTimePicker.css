@@ -1,0 +1,760 @@
+@font-face {
+  font-family: Sans;
+  src: url("https://adm-co.net/fonts/IRSans.woff");
+}
+@font-face {
+  font-family: Tikal;
+  src: url("https://adm-co.net/fonts/Tikal.woff");
+}
+.ADMdtp-container {
+  font-family: Tikal, sans-serif;
+}
+.ADMdtp-container.rtf {
+  font-family: Sans;
+}
+.ADMdtp-container.rtf .ADMdtp-calendar-container {
+  direction: rtl;
+}
+.ADMdtp-container.rtf .masterInput input {
+  direction: ltr;
+}
+.ADMdtp-container .clickOutContainer {
+  position: relative;
+  display: block;
+}
+.ADMdtp-container .masterInput input {
+  position: relative;
+  display: block;
+  -moz-transition: all 0.15s;
+  -o-transition: all 0.15s;
+  -webkit-transition: all 0.15s;
+  transition: all 0.15s;
+}
+.ADMdtp-container .masterInput input[disabled] {
+  background: white;
+  color: black;
+}
+.ADMdtp-container .masterInput.touch > .removeIcon {
+  position: absolute;
+  display: block;
+  right: 0;
+  top: 0;
+  z-index: 3;
+  color: #e64949;
+  padding: 10px 7px;
+}
+.ADMdtp-container .masterInput.touch.open .iconContainer .calendarIcon {
+  -moz-transform: translateY(-100%);
+  -ms-transform: translateY(-100%);
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+}
+.ADMdtp-container .masterInput.touch.open .iconContainer .closeIcon {
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+.ADMdtp-container .masterInput:not(.touch) > .removeIcon {
+  display: none !important;
+}
+.ADMdtp-container .masterInput:not(.touch):not(.disable) .iconContainer:hover .calendarIcon {
+  -moz-transform: translateY(100%);
+  -ms-transform: translateY(100%);
+  -webkit-transform: translateY(100%);
+  transform: translateY(100%);
+}
+.ADMdtp-container .masterInput:not(.touch):not(.disable) .iconContainer:hover .removeIcon {
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+.ADMdtp-container .masterInput.disable input[disabled] {
+  background: #f2f2f2;
+  color: gray;
+}
+.ADMdtp-container .masterInput.disable > .removeIcon {
+  display: none !important;
+}
+.ADMdtp-container .masterInput.disable .iconContainer {
+  cursor: not-allowed;
+}
+.ADMdtp-container .masterInput .iconContainer {
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+.ADMdtp-container .masterInput .iconContainer .fakeIcon {
+  opacity: 0;
+}
+.ADMdtp-container .masterInput .iconContainer .calendarIcon, .ADMdtp-container .masterInput .iconContainer .removeIcon, .ADMdtp-container .masterInput .iconContainer .closeIcon {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 9px;
+  -moz-transition: all 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .masterInput .iconContainer .removeIcon {
+  background: #e64949;
+  color: white;
+  -moz-transform: translateY(-100%);
+  -ms-transform: translateY(-100%);
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+}
+.ADMdtp-container .masterInput .iconContainer .closeIcon {
+  background: #3770d3;
+  color: white;
+  -moz-transform: translateY(100%);
+  -ms-transform: translateY(100%);
+  -webkit-transform: translateY(100%);
+  transform: translateY(100%);
+}
+.ADMdtp-container .ADMdtp-calendar-container {
+  position: absolute;
+  display: block;
+  width: 20em;
+  max-width: 100vw;
+  padding: 1em;
+  padding-top: 0;
+  border-radius: 5px;
+  background: white;
+  overflow: hidden;
+  z-index: 9;
+  -moz-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  -moz-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+  font-size: 14px;
+}
+.ADMdtp-container .ADMdtp-calendar-container ::-moz-selection {
+  background: transparent;
+}
+.ADMdtp-container .ADMdtp-calendar-container ::selection {
+  background: transparent;
+}
+.ADMdtp-container .ADMdtp-calendar-container header {
+  font-size: 1.2em;
+}
+.ADMdtp-container .ADMdtp-calendar-container header .yearMonth {
+  width: 100%;
+  position: relative;
+  display: block;
+  text-align: center;
+  padding: 1em 0;
+  z-index: 0;
+  cursor: context-menu;
+  color: #797979;
+}
+.ADMdtp-container .ADMdtp-calendar-container header .glyphicon {
+  position: absolute;
+  display: block;
+  padding: 1em;
+  margin-top: 0.2em;
+  cursor: pointer;
+  z-index: 1;
+  color: #797979;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.ADMdtp-container .ADMdtp-calendar-container header .glyphicon.glyphicon-menu-left {
+  left: 0;
+}
+.ADMdtp-container .ADMdtp-calendar-container header .glyphicon.glyphicon-menu-left:hover {
+  margin-left: -.3em;
+  color: #d6c483;
+}
+.ADMdtp-container .ADMdtp-calendar-container header .glyphicon.glyphicon-menu-right {
+  right: 0;
+}
+.ADMdtp-container .ADMdtp-calendar-container header .glyphicon.glyphicon-menu-right:hover {
+  margin-right: -.3em;
+  color: #d6c483;
+}
+.ADMdtp-container .ADMdtp-calendar-container .daysNames, .ADMdtp-container .ADMdtp-calendar-container .days {
+  width: 100%;
+}
+.ADMdtp-container .ADMdtp-calendar-container .daysNames > span, .ADMdtp-container .ADMdtp-calendar-container .days > span {
+  width: calc(100% / 7);
+  display: inline-block;
+  text-align: center;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days {
+  min-height: 12em;
+}
+.ADMdtp-container .ADMdtp-calendar-container .daysNames > span {
+  font-weight: bold;
+  cursor: context-menu;
+  color: #fc5f2a;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span > span {
+  width: 100%;
+  height: 100%;
+  padding: .5em;
+  border-radius: .5em;
+  cursor: pointer;
+  position: relative;
+  display: block;
+  -moz-backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span > span.disable {
+  opacity: .5;
+  cursor: context-menu;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span > span:not(.disable):hover {
+  background: #fee3da;
+  color: #d63803;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span > span.selected {
+  background: #fc5f2a !important;
+  color: white !important;
+  border-radius: 5em;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span > span.valid {
+  background: #fff6f3;
+  border-radius: 0;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span > span.valid.min {
+  border-top-left-radius: .5em;
+  border-bottom-left-radius: .5em;
+  border-left: 2px solid #febda8;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span > span.valid.max {
+  border-top-right-radius: .5em;
+  border-bottom-right-radius: .5em;
+  border-right: 2px solid #febda8;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span > span.today:after {
+  content: '';
+  position: absolute;
+  display: block;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-bottom: 0.7em solid #e3d6a9;
+  border-left: .7em solid transparent;
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(1) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.01s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.01s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.01s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.01s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(2) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.02s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.02s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.02s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.02s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(3) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.03s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.03s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.03s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.03s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(4) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.04s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.04s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.04s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.04s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(5) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.05s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.05s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.05s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.05s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(6) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.06s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.06s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.06s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.06s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(7) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.07s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.07s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.07s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.07s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(8) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.08s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.08s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.08s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.08s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(9) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.09s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.09s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.09s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.09s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(10) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.1s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.1s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.1s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.1s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(11) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.11s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.11s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.11s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.11s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(12) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.12s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.12s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.12s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.12s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(13) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.13s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.13s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.13s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.13s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(14) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.14s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.14s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.14s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.14s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(15) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.15s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.15s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.15s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.15s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(16) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.16s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.16s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.16s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.16s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(17) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.17s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.17s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.17s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.17s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(18) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.18s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.18s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.18s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.18s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(19) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.19s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.19s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.19s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.19s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(20) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.2s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.2s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.2s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.2s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(21) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.21s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.21s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.21s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.21s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(22) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.22s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.22s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.22s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.22s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(23) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.23s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.23s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.23s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.23s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(24) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.24s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.24s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.24s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.24s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(25) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.25s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.25s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.25s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.25s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(26) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.26s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.26s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.26s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.26s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(27) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.27s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.27s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.27s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.27s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(28) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.28s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.28s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.28s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.28s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(29) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.29s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.29s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.29s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.29s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(30) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(31) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.31s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.31s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.31s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.31s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(32) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.32s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.32s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.32s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.32s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(33) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.33s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.33s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.33s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.33s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(34) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.34s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.34s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.34s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.34s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(35) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.35s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.35s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.35s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.35s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(36) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.36s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.36s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.36s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.36s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(37) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.37s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.37s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.37s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.37s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(38) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.38s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.38s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.38s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.38s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(39) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.39s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.39s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.39s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.39s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(40) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.4s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.4s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.4s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.4s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(41) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.41s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.41s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.41s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.41s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(42) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.42s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.42s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.42s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.42s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(43) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.43s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.43s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.43s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.43s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(44) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.44s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.44s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.44s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.44s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(45) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.45s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.45s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.45s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.45s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(46) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.46s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.46s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.46s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.46s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(47) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.47s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.47s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.47s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.47s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(48) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.48s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.48s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.48s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.48s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(49) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.49s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.49s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.49s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.49s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days > span:nth-child(50) > span {
+  -moz-transition: all 0.5s, transform 0.2s 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.5s, transform 0.2s 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.5s, transform 0.2s 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.5s, transform 0.2s 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .days.loading > span > span {
+  -moz-transform:  rotateY(90deg) translateX(-10px);
+  -ms-transform:  rotateY(90deg) translateX(-10px);
+  -webkit-transform:  rotateY(90deg) translateX(-10px);
+  transform:  rotateY(90deg) translateX(-10px);
+}
+.ADMdtp-container .ADMdtp-calendar-container footer {
+  height: 2em;
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .today {
+  position: absolute;
+  display: block;
+  width: 4em;
+  height: 1.7em;
+  bottom: 1em;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  border-radius: .5em;
+  background: transparent;
+  color: #cab15c;
+  border: 1px solid transparent;
+  text-align: center;
+  outline: none;
+  font-family: Tikal;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .today:hover {
+  border-color: #f2f2f2;
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .today:active {
+  background: #fcfbf6;
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .calTypeContainer {
+  position: absolute;
+  display: block;
+  width: 5.5em;
+  height: 1.7em;
+  bottom: 1em;
+  right: .5em;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: .5em;
+  border: 1px solid transparent;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .calTypeContainer:hover {
+  border-color: #f2f2f2;
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .calTypeContainer:hover.gregorian p.jalali {
+  background: #e3d6a9;
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .calTypeContainer:hover.jalali p.gregorian {
+  background: #e3d6a9;
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .calTypeContainer:active {
+  background: #fcfbf6;
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .calTypeContainer p {
+  margin: 0;
+  text-align: center;
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0.1em 0;
+  white-space: nowrap;
+  font-family: Tikal;
+  color: #cab15c;
+  -moz-transition: all 0.3s, -moz-transform 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.3s, -o-transform 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.3s, -webkit-transform 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.3s, transform 0.3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .calTypeContainer p.jalali {
+  -moz-transform: translateY(100%);
+  -ms-transform: translateY(100%);
+  -webkit-transform: translateY(100%);
+  transform: translateY(100%);
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .calTypeContainer.jalali p.gregorian {
+  -moz-transform: translateY(-100%);
+  -ms-transform: translateY(-100%);
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+}
+.ADMdtp-container .ADMdtp-calendar-container footer .calTypeContainer.jalali p.jalali {
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+.ADMdtp-container .ADMdtp-calendar-container hr {
+  margin: .5em 0;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: rgba(204, 204, 204, 0.5);
+  top: 0;
+  left: 0;
+  z-index: 9;
+  direction: ltr;
+  -moz-transform: translateY(100%);
+  -ms-transform: translateY(100%);
+  -webkit-transform: translateY(100%);
+  transform: translateY(100%);
+  -moz-transition: all 0.7s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -o-transition: all 0.7s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  -webkit-transition: all 0.7s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  transition: all 0.7s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer.active {
+  background: rgba(255, 255, 255, 0.95);
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer.active .timeSelectIcon {
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -webkit-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timeSelectIcon {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 0;
+  font-size: 1.5em;
+  padding: 0.7em;
+  margin-left: 0.2em;
+  color: #e3d6a9;
+  cursor: pointer;
+  z-index: 2;
+  -moz-transform: translate(0, -2.5em);
+  -ms-transform: translate(0, -2.5em);
+  -webkit-transform: translate(0, -2.5em);
+  transform: translate(0, -2.5em);
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timeSelectIcon:hover {
+  color: #cab15c;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timeSelectIcon:active {
+  color: #e3d6a9;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker {
+  position: absolute;
+  display: block;
+  width: 100%;
+  top: 50%;
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker span {
+  width: 33%;
+  height: 3em;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  font-size: 1.3em;
+  vertical-align: middle;
+  line-height: 3em;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker span.glyphicon {
+  cursor: pointer;
+  color: #fc5f2a;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker span.glyphicon:hover {
+  color: #fdab8f;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker span.glyphicon:hover:before {
+  background: #f6f2e3;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker span.glyphicon:active {
+  color: #fc5f2a;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker span.glyphicon:active.glyphicon-chevron-up {
+  margin-top: -3px;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker span.glyphicon:active.glyphicon-chevron-down {
+  margin-bottom: -3px;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker span.glyphicon:before {
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  padding: .8em 1em;
+  border-radius: 1em;
+}
+.ADMdtp-container .ADMdtp-calendar-container .timePickerContainer .timePicker span.period {
+  font-size: 2em;
+}

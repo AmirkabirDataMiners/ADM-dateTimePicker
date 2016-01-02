@@ -1,0 +1,532 @@
+@import "compass/CSS3";
+@import "ceaser-easing";
+
+
+$green: #56c489;
+$warmBrown: #e3d6a9;
+$brown: #7e4311;
+$blue: #3770d3;
+$orange: #fc5f2a;
+$gray: #797979;
+$red: #E64949;
+
+$mainColor: $orange;
+$todayColor: $warmBrown;
+
+@font-face {
+    font-family: Sans;
+    src: url('https://adm-co.net/fonts/IRSans.woff');
+}
+
+@font-face {
+    font-family: Tikal;
+    src: url('https://adm-co.net/fonts/Tikal.woff');
+}
+
+$FAfont: Sans;
+$ENfont: Tikal;
+
+.ADMdtp-container {
+    font-family: $ENfont, sans-serif;
+    
+    &.rtf {
+        font-family: $FAfont;
+        
+        .ADMdtp-calendar-container {
+            direction: rtl;
+        }
+        
+        .masterInput {
+            input {
+                direction: ltr;
+            }
+        }
+    }
+    
+    
+    
+    .clickOutContainer {
+        position: relative;
+        display: block;
+    }
+    
+    .masterInput {
+        input {
+            position: relative;
+            display: block;
+            @include transition(all .15s);
+            
+            &[disabled] {
+                background: white;
+                color: black;
+            }
+        }
+        
+        &.touch {
+            >.removeIcon {
+                position: absolute;
+                display: block;
+                right: 0;
+                top: 0;
+                z-index: 3;
+                color: $red;
+                padding: 10px 7px;
+            }
+            
+            &.open {
+                .iconContainer {
+                    .calendarIcon {
+                        @include translateY(-100%);
+                    }
+                    .closeIcon {
+                        @include translateY(0);
+                    }
+                }
+            }
+        }
+        
+        &:not(.touch) {
+            >.removeIcon {
+                display: none !important;
+            }
+            
+            &:not(.disable) {
+                .iconContainer {
+                    &:hover {
+                        .calendarIcon {
+                            @include translateY(100%);
+                        }
+                        .removeIcon {
+                            @include translateY(0);
+                        }
+                    }
+                }
+            }
+        }
+
+        &.disable {
+            input[disabled] {
+                background: darken(white, 5%);
+                color: lighten(black, 50%);
+            }
+            
+            >.removeIcon {
+                display: none !important;
+            }
+            
+            .iconContainer {
+                cursor: not-allowed;
+            }
+        }
+
+        
+        .iconContainer {
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            
+            .fakeIcon {
+                opacity: 0;
+            }
+            .calendarIcon, .removeIcon, .closeIcon {
+                position: absolute;
+                display: block;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                padding: 9px;
+                @include transition(all .3s ceaser($easeInOutBack));
+            }
+            .removeIcon {
+                background: $red;
+                color: white;
+                @include translateY(-100%);
+            }
+            .closeIcon {
+                background: $blue;
+                color: white;
+                @include translateY(100%);
+            }
+            
+        }
+    }
+    
+    .ADMdtp-calendar-container {
+        position: absolute;
+        display: block;
+        width: 20em;
+        max-width: 100vw;
+        padding: 1em;
+        padding-top: 0;
+        border-radius: 5px;
+        background: white;
+        overflow: hidden;
+        z-index: 9;
+        @include box-shadow(0 4px 8px rgba(0,0,0,.1));
+        @include transition(opacity .5s);
+        font-size: 14px;
+
+        ::-moz-selection {
+            background: transparent;
+        }
+
+        ::selection {
+            background: transparent;
+        }
+        
+        header {
+            font-size: 1.2em;
+            
+            .yearMonth {
+                width: 100%;
+                position: relative;
+                display: block;
+                text-align: center;
+                padding: 1em 0;
+                z-index: 0;
+                cursor: context-menu;
+                color: $gray;
+            }
+            
+            .glyphicon {
+                position: absolute;
+                display: block;
+                padding: 1em;
+                margin-top: 0.2em;
+                cursor: pointer;
+                z-index: 1;
+                color: $gray;
+                @include transition(all .3s);
+                
+                &.glyphicon-menu-left {
+                    left: 0;
+                    
+                    &:hover {
+                        margin-left: -.3em;
+                        color: darken($warmBrown, 10%);
+                    }
+                }
+                &.glyphicon-menu-right {
+                    right: 0;
+                    
+                    &:hover {
+                        margin-right: -.3em;
+                        color: darken($warmBrown, 10%);
+                    }
+                }
+            }
+        }
+        
+        .daysNames, .days {
+            width: 100%;
+
+            >span {
+                width: calc(100% / 7);
+                display: inline-block;
+                text-align: center;
+            }
+        }
+        
+        .days {
+            min-height: 12em;
+        }
+
+        .daysNames {
+            >span {
+                font-weight: bold;
+                cursor: context-menu;
+                color: $mainColor;
+            }
+        }
+        .days {
+            >span {
+
+                >span {
+                    width: 100%;
+                    height: 100%;
+                    padding: .5em;
+                    border-radius: .5em;
+                    cursor: pointer;
+                    position: relative;
+                    display: block;   
+                    @include backface-visibility(hidden);
+                    
+                    &.disable {
+                        opacity: .5;
+                        cursor: context-menu;
+                    }
+
+                    &:not(.disable) {
+
+
+                        &:hover {
+                            background: lighten($mainColor, 35%);
+                            color: darken($mainColor, 15%);
+                        }
+
+                    }
+
+
+                    &.selected {
+                        background: $mainColor !important;
+                        color: white !important;
+                        border-radius: 5em;
+                    }
+
+                    &.valid {
+                        background: lighten($mainColor, 40%);
+                        border-radius: 0;
+
+                        &.min {
+                            border-top-left-radius: .5em;
+                            border-bottom-left-radius: .5em;
+                            border-left: 2px solid lighten($mainColor, 25%);
+                        }
+                        &.max {
+                            border-top-right-radius: .5em;
+                            border-bottom-right-radius: .5em;
+                            border-right: 2px solid lighten($mainColor, 25%);
+                        }
+                    }
+                    
+                    &.notValid {
+                        
+                    }
+
+                    &.today {
+                        
+                        &:after {
+                            content: '';
+                            position: absolute;
+                            display: block;
+                            right: 0;
+                            bottom: 0;
+                            width: 0;
+                            height: 0;
+                            border-bottom: .7em solid $todayColor;
+                            border-left: .7em solid transparent;
+                        }
+                    }
+                }
+                
+                
+                @for $i from 1 through 50 {
+                    &:nth-child(#{$i})>span { 
+                        @include transition(all .5s, transform .2s #{$i*.01}s ceaser($easeInOutBack));
+                    }
+                }
+                
+                
+                
+                
+                
+                
+            }
+            
+            &.loading {
+                >span>span {
+                    @include create-transform($trans-x:-10px, $rotate-y: 90deg);
+                }
+            }
+        }
+        
+        footer {
+            height: 2em;
+   
+            .today {
+                position: absolute;
+                display: block;
+                width: 4em;
+                height: 1.7em;
+                bottom: 1em;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+                border-radius: .5em;
+                background: transparent;
+                color: darken($warmBrown, 20%);
+                border: 1px solid transparent;
+                text-align: center;
+                outline: none;
+                font-family: $ENfont;
+                @include transition(all .3s);
+                
+                &:hover {
+                    border-color: #f2f2f2;
+                }
+                
+                &:active {
+                    background: lighten($warmBrown, 20%);
+                }
+            }
+            
+            .calTypeContainer {
+                position: absolute;
+                display: block;
+                width: 5.5em;
+                height: 1.7em;
+                bottom: 1em;
+                right: .5em;
+                overflow: hidden;
+                cursor: pointer;
+                border-radius: .5em;
+                border: 1px solid transparent;
+                @include transition(all .3s);
+                
+                &:hover {
+                    border-color: #f2f2f2;
+
+                    &.gregorian {
+                        p.jalali {
+                            background: $warmBrown;
+                        }
+                    }
+                    &.jalali {
+                        p.gregorian {
+                            background: $warmBrown;
+                        }
+                    }
+                }
+
+                &:active {
+                    background: lighten($warmBrown, 20%);
+                }
+                
+                p {
+                    margin: 0;
+                    text-align: center;
+                    position: absolute;
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    padding: 0.1em 0;
+                    white-space: nowrap;
+                    font-family: $ENfont;
+                    color: darken($warmBrown, 20%);
+                    @include transition(all .3s, transform .3s ceaser($easeInOutBack));
+                    
+                    &.jalali {
+                        @include translateY(100%);
+                    }
+                }
+                
+                &.jalali {
+                    p {
+                        &.gregorian {
+                            @include translateY(-100%);
+                        }
+                        &.jalali {
+                            @include translateY(0);
+                        }
+                    }
+                }
+            }
+        }
+        
+        hr {
+            margin: .5em 0;
+        }
+        
+        .timePickerContainer {
+            position: absolute;
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: rgba(#ccc, .5);
+            top: 0;
+            left: 0;
+            z-index: 9;
+            direction: ltr;
+            @include translateY(100%);
+            @include transition(all .7s ceaser($easeInOutBack));
+
+            &.active {
+                background: rgba(#fff, .95);
+                @include translateY(0);
+                
+                .timeSelectIcon {
+                    @include translate(0, 0);
+                }
+            }
+            
+            .timeSelectIcon {
+                position: absolute;
+                display: block;
+                left: 0;
+                top: 0;
+                font-size: 1.5em;
+                padding: 0.7em;
+                margin-left: 0.2em;
+                color: $warmBrown;
+                cursor: pointer;
+                z-index: 2;
+                @include translate(0, -2.5em);
+                @include transition(all .5s);
+
+                &:hover {
+                    color: darken($warmBrown, 20%);
+                }
+
+                &:active {
+                    color: $warmBrown;
+                }
+            }
+            
+            .timePicker {
+                position: absolute;
+                display: block;
+                width: 100%;
+                top: 50%;
+                @include translateY(-50%);
+                
+                span {
+                    width: 33%;
+                    height: 3em;
+                    position: relative;
+                    display: inline-block;
+                    text-align: center;
+                    font-size: 1.3em;
+                    vertical-align: middle;
+                    line-height: 3em;
+                    
+                    &.glyphicon {
+                        cursor: pointer;
+                        color: $mainColor;
+                        
+                        &:hover {
+                            color: lighten($mainColor, 20%);
+                            
+                            &:before {
+                                background: lighten($warmBrown, 15%);
+                            }
+                        }
+
+                        &:active {
+                            color: $mainColor;
+                            
+                            &.glyphicon-chevron-up {
+                                margin-top: -3px;
+                            }
+                            
+                            &.glyphicon-chevron-down {
+                                margin-bottom: -3px;
+                            }
+                        }
+                        
+                        &:before {
+                            @include transition(all .5s);
+                            padding: .8em 1em;
+                            border-radius: 1em;
+                        }
+                    }
+                    
+                    &.period {
+                        font-size: 2em;
+                    }
+                }
+            }
+        }
+    }
+}
+
