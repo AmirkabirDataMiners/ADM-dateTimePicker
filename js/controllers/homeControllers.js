@@ -1,5 +1,7 @@
 appControllers.controller('homeControllers', function($scope, $sce, $http, $controller, $filter) {
 
+    $scope.date3Message = [];
+    
     $scope.availableOptions = [
         {name:'default', type:'Number, String, Date', default:'--', description:'Initial date can be Number(UNIX), String or Date'},
         {name:'calType', type:'String', default:'gregorian', description:"<strong>gregorian</strong> & <strong>jalali</strong> are available."},
