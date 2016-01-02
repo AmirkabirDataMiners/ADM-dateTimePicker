@@ -50,7 +50,6 @@
         
         function getJalaliDate(date) {
             var daysPassedInGregorianCalender = getDaysPassedInGregorianCalender(date);
-            //DiffrentialOfCalenders
             daysPassedInGregorianCalender -= 226894;
             return getJalaliDateOfDay(daysPassedInGregorianCalender);
         }
@@ -110,7 +109,6 @@
             ];
         }
         function getYearJalaliCalender(daysPassedInJalaliCalender) {
-            //PureYear
             var years = Math.floor((daysPassedInJalaliCalender - 1) / 365);
             var leapsCount = 0;
             if (years > 22) {
@@ -165,7 +163,6 @@
         }
         function howManyLeapsYearPassedInJalaliCalender(year) {
             if (year < 23) {
-                //1 || i == 5 ||i == 9 ||i == 13 ||i == 17 ||i == 22
                 switch (year) {
                     case 1:
                         return 0;
@@ -174,7 +171,6 @@
                     case 4:
                     case 5:
                         return 1;
-
                     case 6:
                     case 7:
                     case 8:
@@ -190,7 +186,6 @@
                     case 16:
                     case 17:
                         return 4;
-                        break;
                     case 18:
                     case 19:
                     case 20:
@@ -265,10 +260,6 @@
             var countOfFourHandredYears = Math.floor(yearsPassed / 400);
             return countOfFourYears - countOfHandredYears + countOfFourHandredYears;
         }
-
-        //GregorianDate
-
-
         function getGregorianYear(gregorianPassedDays) {
             var pureYear = Math.floor((gregorianPassedDays) / 365);
             var gregorianLeapsYear = howManyGregorianLeapsYearPassed(pureYear);
@@ -373,7 +364,6 @@
 
             var date = { year: year, month: month, day: day };
             date = getJalaliDate(date);
-            //console.log(date);
             return date;
         }
         var getGregorianDates = function(year, mont, day) {
@@ -382,7 +372,6 @@
                 month: mont,
                 year: year
             });
-            //console.log(date);
             return date;
         }
         
@@ -393,7 +382,7 @@
         }
     }
     
-    var ADMdtpFactory = function(ADMdtpConvertor, $timeout) {
+    var ADMdtpFactory = function(ADMdtpConvertor) {
         'use strict';
 
         this.leadingZero = function(num) {
@@ -575,7 +564,6 @@
                             var _inWeekhValid = new RegExp("^[!]?([i]([+][0-9][0-9]?)?)([&][i]([+][0-9][0-9]?)?)*?$").test(arr[i]);
                             
                             if (_inMonthValid || _inWeekhValid) {
-                                debugger;
                                 var _not = arr[i][0]=='!';
                                 arr[i] = _not?arr[i].split('!')[1]:arr[i];
                                 var _patt = arr[i].split('&');
@@ -630,7 +618,6 @@
                     }
                 }
             }
-            //console.info(_inMonth);
             return {smart: smart, calType: calType, static: _static, inWeek: _inWeek, inMonth: _inMonth};
         }
         this.isDayDisable = function(calType, disabled, day) {
@@ -707,7 +694,6 @@
                         return;
                     }
                     
-                    //var _cur = angular.copy(scope.current);
                     if (scope.current.month == 1)
                         scope.current.month = 12, scope.current.year--;
                     else
@@ -721,7 +707,6 @@
                         return;
                     }
                         
-                    //var _cur = angular.copy(scope.current);
                     if (scope.current.month == 12)
                         scope.current.month = 1, scope.current.year++;
                     else
@@ -739,7 +724,9 @@
                     admDtp.updateMasterValue(day, 'day');
                     
                     if (scope.option.autoClose) {
-                        scope.closeCalendar();
+                        $timeout(function() {
+                            scope.closeCalendar();
+                        },100);
                         return;
                     }
                         
@@ -790,7 +777,6 @@
                     if (!scope.dtpValue)
                         return;
                     var _inputUnix = ADMdtpFactory.convertToUnix(scope.dtpValue.formated, scope.calType);
-                    //console.info(_inputUnix, scope.fullData.unix)
                     if (!_inputUnix || ((scope.minDate && !ADMdtpFactory.isDateBigger(_inputUnix,scope.minDate)) || (scope.maxDate && !ADMdtpFactory.isDateBigger(scope.maxDate,_inputUnix)))) {
                         admDtp.updateMasterValue(false);
                         return;
@@ -827,7 +813,6 @@
                     }
                     
                     if (scope.dtpValue) {
-                        //console.warn(ADMdtpFactory.convertFromUnix(scope.dtpValue.unix))
                         admDtp.updateMasterValue(ADMdtpFactory.convertFromUnix(scope.dtpValue.unix, scope.calType));
                     }
                     
@@ -837,13 +822,12 @@
 
                 
             },
-            templateUrl: 'ADM-dateTimePicker_calendar.html'
             //templateUrl: 'js/ADM-dateTimePicker/ADM-dateTimePicker_calendar.html'
-            //template: '<div class="ADMdtp-calendar-container"><header><span class="glyphicon glyphicon-menu-left" ng-click="previousMonth()"></span><span class="yearMonth">{{current.monthDscr +" "+ current.year}}</span><span class="glyphicon glyphicon-menu-right" ng-click="nextMonth()"></span></header><div class="daysNames"><span ng-repeat="name in daysNames">{{name}}</span></div><hr><div class="days" ng-class="{loading:loadingDays}"><span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType==\'jalali\')?\'max\':\'min\'):\'\', (day.isMax)?((calType==\'jalali\')?\'min\':\'max\'):\'\']">{{day.day}}</span></span></div><hr><footer><div class="calTypeContainer" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple"><p class="gregorian">Gregorian</p><p class="jalali">جلالی</p></div><button class="today" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button></footer><div class="timePickerContainer" ng-class="{active: timePickerStat}"><span class="glyphicon timeSelectIcon" ng-class="(timePickerStat)?\'glyphicon-menu-down\':\'glyphicon-time\'" ng-click="timePickerStat = !timePickerStat"></span><div class="timePicker"><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'hour\', 1)"></span><span></span><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'minute\', 1)"></span><span>{{time.hour}}</span><span class="period">:</span><span>{{time.minute}}</span><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'hour\', -1)"></span><span></span><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'minute\', -1)"></span></div></div></div>'
+            template: '<div class="ADMdtp-calendar-container"><header><span class="glyphicon glyphicon-menu-left" ng-click="previousMonth()"></span><span class="yearMonth">{{current.monthDscr +" "+ current.year}}</span><span class="glyphicon glyphicon-menu-right" ng-click="nextMonth()"></span></header><div class="daysNames"><span ng-repeat="name in daysNames">{{name}}</span></div><hr><div class="days" ng-class="{loading:loadingDays}"><span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, notValid:!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType==\'jalali\')?\'max\':\'min\'):\'\', (day.isMax)?((calType==\'jalali\')?\'min\':\'max\'):\'\']">{{day.day}}</span></span></div><hr><footer><div class="calTypeContainer" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple"><p class="gregorian">Gregorian</p><p class="jalali">جلالی</p></div><button class="today" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button></footer><div class="timePickerContainer" ng-class="{active: timePickerStat}"><span class="glyphicon timeSelectIcon" ng-class="(timePickerStat)?\'glyphicon-menu-down\':\'glyphicon-time\'" ng-click="timePickerStat = !timePickerStat"></span><div class="timePicker"><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'hour\', 1)"></span><!----><span></span><!----><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'minute\', 1)"></span><!----><span>{{time.hour}}</span><!----><span class="period">:</span><!----><span>{{time.minute}}</span><!----><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'hour\', -1)"></span><!----><span></span><!----><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'minute\', -1)"></span></div></div></div>'
         }
     }
 
-    var ADMdtpDirective = function(ADMdtp, ADMdtpConvertor, ADMdtpFactory, constants, $compile, $timeout, $document) {
+    var ADMdtpDirective = function(ADMdtp, ADMdtpConvertor, ADMdtpFactory, constants, $compile, $timeout) {
         'use strict';
 
         return {
@@ -862,7 +846,6 @@
                 onClose: '&',
             },
             link: function(scope, element, attrs, ngModel) {
-                //console.info(scope.options);
                 var _options = scope.options;
                 if (!(_options instanceof Object))
                     _options = {};
@@ -871,7 +854,6 @@
                 scope.calType = scope.option.calType;
                 scope.month = constants.calendars[scope.calType].monthsNames;
                 scope.daysNames = constants.calendars[scope.calType].daysNames;
-                //console.warn(scope.option);
                 scope.timeoutValue = [0,0];
 
                 scope.minDate = scope.mindate?new Date(scope.mindate):null;
@@ -923,7 +905,6 @@
                 }
                 
                 scope.parseInputValue = function(valueStr, resetTime, releaseTheBeast) {
-                    //console.info(valueStr);
                     var _dateTime = false;
 
                     if (valueStr) {
@@ -965,6 +946,21 @@
                         }
                 }
                 scope.parseInputValue(scope.option.default || ngModel.$viewValue, true, false);
+
+                ngModel.$formatters.push(function (val) {
+                    if (!val)
+                        scope.destroy();
+                    else if (val == scope.dtpValue.formated) {
+                        console.info(val, scope.dtpValue.formated);
+                        return;
+                    }
+                    else {
+                        console.info(scope.calType, val, scope.dtpValue.formated);
+                        scope.parseInputValue(val, false, true);
+                    }
+
+                    return val;
+                });
                 
                 attrs.$observe("disable", function (_newVal) {
                     scope.$applyAsync(function() {
@@ -996,13 +992,15 @@
                     
                     scope.timeoutValue[0] = 0;
                     scope.showCalendarStat = true;
-                    var calendarDirectiveElement = $compile( '<adm-dtp-calendar style="opacity:0;"></adm-dtp-calendar>' )( scope );
-                    //console.info(element.children()[0])
-                    angular.element(element.children()[0]).append( calendarDirectiveElement );
                     
+                    var _admDtpCalendarHtml = angular.element('<adm-dtp-calendar style="opacity:0;"></adm-dtp-calendar>');
+                    angular.element(element.children()[0]).append(_admDtpCalendarHtml);
+
+                    scope.$applyAsync(function () {
+                        $compile(_admDtpCalendarHtml)(scope);
+                    });
                     
                     $timeout(function() {
-                        var _doc = $document[0].documentElement;
                         var _element = angular.element(element.children()[0]).children()[1];
                         var _elementBound = _element.getBoundingClientRect();
                         var _input = element.children().children()[0];
@@ -1011,33 +1009,11 @@
                             x: _inputBound.left,
                             y: _inputBound.top + _inputBound.height
                         }
-//                        var _docPos = {
-//                            top: (window.pageYOffset || _doc.scrollTop) - (_doc.clientTop || 0),
-//                            left: (window.pageXOffset || _doc.scrollLeft) - (_doc.clientLeft || 0)
-//                        }
-//                        var _docSize = {
-//                            width: _doc.clientWidth + _docPos.left,
-//                            height: _doc.clientHeight + _docPos.top
-//                        }
+
                         var _totalSize = {
                             width: _elementBound.width + _corner.x,
                             height: _elementBound.height + _corner.y
                         }
-//                        var _pos = {
-//                            top: Math.max(_corner.y - _docPos.top, 0),
-//                            left: Math.max(_corner.x - _docPos.left, 0)
-//                        }
-//                        console.info(window.pageYOffset, _doc.scrollTop, _doc.clientTop, _doc.clientHeight);
-//                        console.info(_corner, _docPos, _docSize, _totalSize, _pos);
-//                        
-//                        if (_totalSize.width > _docSize.width) {
-//                            _pos.left = _pos.left - (_totalSize.width - _docSize.width);
-//                        }
-//                        if (_totalSize.height > _docSize.height) {
-//                            //console.info(_pos.top, _totalSize.height, _docSize.height, _elementBound.width, _elementBound.height, _element.getBoundingClientRect());
-//                            _pos.top = _pos.top - (_totalSize.height - _docSize.height);
-//                        }
-                        //console.info(_totalSize.width, window.innerWidth, _elementBound.width, _corner.x);
                         
                         var _pos = {
                             top: '',
@@ -1055,7 +1031,6 @@
                         else
                             _pos.left = 0;
                         
-                        //console.info(_pos);
                         angular.element(_element).css({top: _pos.top, bottom: _pos.bottom, left: _pos.left, opacity: 1});
                         
                     }, 70);
@@ -1272,7 +1247,7 @@
                 }
             ],
             //templateUrl: 'js/ADM-dateTimePicker/ADM-dateTimePicker_view.html'
-            template: '<div class="ADMdtp-container" ng-class="{rtf: (calType==\'jalali\'), touch: option.isDeviceTouch, disable: disable}"><div class="clickOutContainer" click-out="closeCalendar()"><div class="input-group masterInput" ng-class="{touch: option.isDeviceTouch, disable: disable, open: showCalendarStat}"><div class="input-group-addon iconContainer" ng-click="(option.isDeviceTouch)?toggleCalendar():destroy()"><i class="glyphicon glyphicon-unchecked fakeIcon"></i><i class="glyphicon glyphicon-calendar calendarIcon"></i><i class="glyphicon glyphicon-remove removeIcon"></i><i class="glyphicon glyphicon-off closeIcon"></i></div><input type="text" class="form-control" ng-model="dtpValue.formated" ng-click="openCalendar()" ng-disabled="option.isDeviceTouch || disable" ng-blur="modelChanged()"><i class="glyphicon glyphicon-remove removeIcon" ng-if="dtpValue.formated" ng-click="destroy()"></i></div></div><script type="text/ng-template" id="ADM-dateTimePicker_calendar.html"><div class="ADMdtp-calendar-container"><header><span class="glyphicon glyphicon-menu-left" ng-click="previousMonth()"></span><span class="yearMonth">{{current.monthDscr +" "+ current.year}}</span><span class="glyphicon glyphicon-menu-right" ng-click="nextMonth()"></span></header><div class="daysNames"><span ng-repeat="name in daysNames">{{name}}</span></div><hr><div class="days" ng-class="{loading:loadingDays}"><span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, notValid:!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType==\'jalali\')?\'max\':\'min\'):\'\', (day.isMax)?((calType==\'jalali\')?\'min\':\'max\'):\'\']">{{day.day}}</span></span></div><hr><footer><div class="calTypeContainer" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple"><p class="gregorian">Gregorian</p><p class="jalali">جلالی</p></div><button class="today" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button></footer><div class="timePickerContainer" ng-class="{active: timePickerStat}"><span class="glyphicon timeSelectIcon" ng-class="(timePickerStat)?\'glyphicon-menu-down\':\'glyphicon-time\'" ng-click="timePickerStat = !timePickerStat"></span><div class="timePicker"><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'hour\', 1)"></span><!----><span></span><!----><span class="glyphicon glyphicon-chevron-up" ng-click="changeTimeValue(\'minute\', 1)"></span><!----><span>{{time.hour}}</span><!----><span class="period">:</span><!----><span>{{time.minute}}</span><!----><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'hour\', -1)"></span><!----><span></span><!----><span class="glyphicon glyphicon-chevron-down" ng-click="changeTimeValue(\'minute\', -1)"></span></div></div></div></script></div>'
+            template: '<div class="ADMdtp-container" ng-class="{rtf: (calType==\'jalali\'), touch: option.isDeviceTouch, disable: disable}"><div class="clickOutContainer" click-out="closeCalendar()"><div class="input-group masterInput" ng-class="{touch: option.isDeviceTouch, disable: disable, open: showCalendarStat}"><div class="input-group-addon iconContainer" ng-click="(option.isDeviceTouch)?toggleCalendar():destroy()"><i class="glyphicon glyphicon-unchecked fakeIcon"></i><i class="glyphicon glyphicon-calendar calendarIcon"></i><i class="glyphicon glyphicon-remove removeIcon"></i><i class="glyphicon glyphicon-off closeIcon"></i></div><input type="text" class="form-control" ng-model="dtpValue.formated" ng-focus="openCalendar()" ng-disabled="option.isDeviceTouch || disable" ng-blur="modelChanged()"><i class="glyphicon glyphicon-remove removeIcon" ng-if="dtpValue.formated" ng-click="destroy()"></i></div></div></div>'
         };
     }
     
@@ -1322,10 +1297,6 @@
             ADMdtp.setOptions({isDeviceTouch: false});
         } 
     }
-    
-    var ADMdtpRun = function(ADMdtp) {
-        console.info(ADMdtp.getOptions());
-    }
 
     return angular.module('ADM-dateTimePicker', [])
         .constant('constants', {
@@ -1342,10 +1313,9 @@
         })
         .provider('ADMdtp', ADMdtpProvider)
         .factory('ADMdtpConvertor', [ADMdtpConvertor])
-        .factory('ADMdtpFactory', ['ADMdtpConvertor', '$timeout', ADMdtpFactory])
-        .directive('admDtp', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$compile', '$timeout', '$document', ADMdtpDirective])
+        .factory('ADMdtpFactory', ['ADMdtpConvertor', ADMdtpFactory])
+        .directive('admDtp', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$compile', '$timeout', ADMdtpDirective])
         .directive('admDtpCalendar', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$timeout', ADMdtpCalendarDirective])
         .directive('clickOut', ['$document', clickOutside])
-        .config(['ADMdtpProvider', ADMdtpConfig])
-        .run(ADMdtpRun);
+        .config(['ADMdtpProvider', ADMdtpConfig]);
 }(window.angular));

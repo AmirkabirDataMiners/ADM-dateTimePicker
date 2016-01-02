@@ -2,16 +2,18 @@
     <h1>
         <strong>Pure <span class="red">AngularJs</span> <br> <span class="orange">Gregorian</span> and <span class="orange">Jalali</span> <br> smart date & time picker</strong>
         <br>
-        <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&type=follow&count=true" frameborder="0" scrolling="0" width="230px" height="20px"></iframe>
+<!--        <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&type=follow&count=true" frameborder="0" scrolling="0" width="230px" height="20px"></iframe>-->
         <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&repo=ADM-dateTimePicker&type=watch&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
         <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&repo=ADM-dateTimePicker&type=fork&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
     </h1>
     <hr>
-    <h2><strong>KeyWords</strong></h2>
-    <div class="keyWords">
-        <pre class="inline">AngularJs</pre> <pre class="inline">Gregorian</pre> <pre class="inline">Jalali</pre> <pre class="inline">Date & Time picker</pre> <pre class="inline">Two calendar in one datePicker</pre> <pre class="inline">RangePicker</pre> <pre class="inline">Update range limitation automatilcy</pre> <pre class="inline">Disabling pattern</pre> <pre class="inline">Responsive</pre> <pre class="inline">UNIX supporting</pre>
-    </div>
+    <br>
+    <h2><strong>Tags</strong></h2>
     <hr>
+    <div class="keyWords">
+        <pre class="inline">AngularJs</pre> <pre class="inline">Gregorian</pre> <pre class="inline">Jalali</pre> <pre class="inline">Date & Time picker</pre> <pre class="inline">Two calendar in one datePicker</pre> <pre class="inline">RangePicker</pre> <pre class="inline">Update range limitation automatilcy</pre> <pre class="inline">Disabling pattern</pre> <pre class="inline">Responsive</pre> <pre class="inline">UNIX</pre> <pre class="inline">SASS</pre> <pre class="inline">Compass</pre> <pre class="inline">Bootstrap</pre>
+    </div>
+    <br>
     <h2><strong>Implementation steps</strong></h2>
     <hr>
     <h3>Step 1: Install ADM-dateTimePicker</h3>
@@ -107,7 +109,7 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
     <br>
     <h2><strong>Disabling days</strong></h2>
     <hr>
-    <h3>Disable pecific days</h3>
+    <h3>Disable specific days</h3>
     
 <div hljs class="customCode">
 <!-- it accept both unix and string date -->
@@ -172,11 +174,11 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
         </div>
         <div class="col-xs-12 col-sm-6">
             disable weekends - <pre class="inline">i&i+6</pre>
-            <adm-dtp ng-model="date1" options='{default: "2016/1/20", disabled: ["i&i+6"]}'></adm-dtp>
+            <adm-dtp ng-model="date14" options='{default: "2016/1/20", disabled: ["i&i+6"]}'></adm-dtp>
         </div>
         <div class="col-xs-12 col-sm-6">
             only weekends - <pre class="inline">!i&i+6</pre>
-            <adm-dtp ng-model="date2" options='{default: "2016/1/20", disabled: ["!i&i+6"]}'></adm-dtp>
+            <adm-dtp ng-model="date15" options='{default: "2016/1/20", disabled: ["!i&i+6"]}'></adm-dtp>
         </div>
     </div>
     <br>
@@ -231,9 +233,9 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
     <h4>No need to destroy datepickers anymore!</h4>
     
 <div hljs class="customCode">
-<adm-dtp ng-model='date1' full-data="date1_detail" maxdate="{{date2_detail.unix}}"></adm-dtp>
-<adm-dtp ng-model='date2' full-data="date2_detail" mindate="{{date1_detail.unix}}"></adm-dtp>
-<adm-dtp ng-model='date3' mindate="{{date1_detail.unix}}" maxdate="{{date2_detail.unix}}"></adm-dtp>
+<adm-dtp ng-model='date11' full-data="date11_detail" maxdate="{{date12_detail.unix}}"></adm-dtp>
+<adm-dtp ng-model='date12' full-data="date12_detail" mindate="{{date11_detail.unix}}"></adm-dtp>
+<adm-dtp ng-model='date13' mindate="{{date11_detail.unix}}" maxdate="{{date12_detail.unix}}"></adm-dtp>
 </div> 
     
     <div class="row">
@@ -326,5 +328,15 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
         Amirkabir Data Miners
     </a>
 </footer>
+
+
+
+
+
+
+
+
+
+
 
 
