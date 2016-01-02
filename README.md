@@ -1,8 +1,14 @@
-# [ADM-dateTimePicker](https://amirkabirdataminers.github.io/ADM-dateTimePicker)
+# ADM-dateTimePicker  
+![Version](https://img.shields.io/badge/Version-v1.0.0-brightgreen.svg)
+&nbsp;
+![AngularJs](https://img.shields.io/badge/Pure-AngularJs-red.svg)
+&nbsp;
+![License MIT](http://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat)
+
 *Pure AngularJs Gregorian and Jalali smart date &amp; time picker by [ADM | Amirkabir Data Miners](https://adm-co.net)*
 
-### KeyWords  
-`AngularJs` `Gregorian` `Jalali` `Date & Time picker` `Two calendar in one datePicker` `RangePicker` `Update range limitation automatilcy` `Disabling pattern` `Responsive` `UNIX supporting`
+### Tags  
+`AngularJs` `Gregorian` `Jalali` `Date & Time picker` `Two calendar in one datePicker` `RangePicker` `Update range limitation automatilcy` `Disabling pattern` `Responsive` `UNIX` `SASS` `Compass` `Bootstrap`
 
 ---
 
