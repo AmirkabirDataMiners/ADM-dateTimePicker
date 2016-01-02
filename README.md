@@ -20,6 +20,9 @@ See ADMdtp live [HERE](https://amirkabirdataminers.github.io/ADM-dateTimePicker)
 ### Implementation steps
 
 #### Step 1: Install ADM-dateTimePicker
+````javascript
+npm install adm-dtp
+````
 #### Step 2: Include the files in your app
 ```html
 <!doctype html>
