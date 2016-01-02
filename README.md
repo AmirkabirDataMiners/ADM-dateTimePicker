@@ -70,7 +70,7 @@ autoClose | Boolean | false | Closing ADMdtp on selecting a day
 transition | Boolean | true | Transition on loading days
 ---
 ### Disabling days
-#### Disable pecific days
+#### Disable specific days
 ```html
 <!-- it accept both unix and string date -->
 <adm-dtp ng-model="date" options="disabled:['2016/1/20', 1453408200000]"></adm-dtp>
