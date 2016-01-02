@@ -5,10 +5,10 @@
 &nbsp;
 ![License MIT](http://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat)
 
-*Pure AngularJs Gregorian and Jalali smart dateTimepPicker by [ADM | Amirkabir Data Miners](https://adm-co.net)*
+*Pure AngularJs Gregorian and Jalali smart dateTimePicker by [ADM | Amirkabir Data Miners](https://adm-co.net)*
 
 ### Tags  
-`AngularJs` `Gregorian` `Jalali` `DateTimepPicker` `Two calendar in one datePicker` `RangePicker` `Update range limitation automatilcy` `Disabling pattern` `Responsive` `UNIX` `SASS` `Compass` `Bootstrap`
+`AngularJs` `Gregorian` `Jalali` `DateTimePicker` `Two calendar in one datePicker` `RangePicker` `Update range limitation automatilcy` `Disabling pattern` `Responsive` `UNIX` `SASS` `Compass` `Bootstrap`
 
 ---
 
