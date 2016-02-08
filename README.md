@@ -60,7 +60,7 @@ var app = angular.module('myApp', ['ADM-dateTimePicker']);
 app.config(['ADMdtpProvider', function(ADMdtp) {
     ADMdtp.setOptions({
         calType: 'gregorian',
-        format: 'YYYY/MM/DD HH:MM',
+        format: 'YYYY/MM/DD hh:mm',
         default: 'today',
         ...
     });
