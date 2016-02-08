@@ -1,5 +1,5 @@
 # ADM-dateTimePicker  
-![Version](https://img.shields.io/badge/npm-v1.1.0-brightgreen.svg)
+![Version](https://img.shields.io/badge/npm-v1.1.1-brightgreen.svg)
 &nbsp;
 ![AngularJs](https://img.shields.io/badge/Pure-AngularJs-red.svg)
 &nbsp;
