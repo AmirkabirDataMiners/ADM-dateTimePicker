@@ -1,7 +1,7 @@
 {
   "name": "adm-dtp",
-  "version": "1.0.0",
-  "description": "Pure AngularJs Gregorian and Jalali smart date & time picker",
+  "version": "1.1.0",
+  "description": "Pure AngularJs Gregorian and Jalali smart dateTimePicker",
   "main": "ADM-dateTimePicker.js",
   "scripts": {
     "test": "karma"

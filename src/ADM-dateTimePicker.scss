@@ -5,101 +5,179 @@
 $green: #56c489;
 $warmBrown: #e3d6a9;
 $brown: #7e4311;
-$blue: #3770d3;
+$blue: #378bd3;
 $orange: #fc5f2a;
 $gray: #797979;
 $red: #E64949;
 
 $mainColor: $orange;
 $todayColor: $warmBrown;
+$dtpContainerWidth: 20em;
 
 @font-face {
-    font-family: Sans;
-    src: url('https://adm-co.net/fonts/IRSans.woff');
+    font-family: minifontawesome;
+    src: url(#minifontawesomeregular);
 }
 
-@font-face {
-    font-family: Tikal;
-    src: url('https://adm-co.net/fonts/Tikal.woff');
-}
+$FAfont: Tahoma;
+$ENfont: sans-serif;
 
-$FAfont: Sans;
-$ENfont: Tikal;
+.dtpIcon {
+    display: inline-block;
+    font-size: inherit;
+    font: normal normal normal 14px/1 fontawesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    &.cross:before {
+        content: '\f00d';
+    }
+    &.left:before {
+        content: '\276E';
+    }
+    &.right:before {
+        content: '\276F';
+    }
+    &.returnArrow:before {
+        content: '\21B6';
+    }
+    &.clock:before {
+        content: '\f017';
+    }
+    &.calendar:before {
+        content: '\f073';
+    }
+    &.off:before {
+        content: '\f011';
+    }
+    &.null:before {
+        content: '\f1fe';
+        color: transparent;
+        opacity: 0;
+    }
+    
+}
 
 .ADMdtp-container {
     font-family: $ENfont, sans-serif;
-    
-    &.rtf {
+
+    &.rtl {
         font-family: $FAfont;
-        
+
         .ADMdtp-calendar-container {
             direction: rtl;
         }
-        
+
         .masterInput {
             input {
                 direction: ltr;
             }
         }
     }
-    
-    
-    
-    .clickOutContainer {
+
+    ng-transclude, .clickOutContainer {
         position: relative;
-        display: block;
+        display: table;
     }
-    
+
+    //Bootstrap inputGroup Style
     .masterInput {
+        position: relative;
+        display: table;
+        border-collapse: separate;
+        &[class*="col-"] {
+            float: none;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        input {            
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            margin: 0;
+            @include box-shadow(inset 0 1px 1px rgba(black,.075));
+            
+            position: relative;
+            z-index: 2;
+            float: left;
+            width: 100%;
+            margin-bottom: 0;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            
+            &:focus {
+                border-color: #66afe9;
+                outline: 0;
+                @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6));
+            }
+        }
+        .iconContainer {
+            display: table-cell;
+            
+            width: 1%;
+            white-space: nowrap;
+            vertical-align: middle;
+            
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1;
+            color: #555;
+            text-align: center;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            
+            border-left: 0;
+        }
+        //END Bootstrap inputGroup Style
+        
         input {
             position: relative;
             display: block;
             @include transition(all .15s);
-            
+
             &[disabled] {
                 background: white;
                 color: black;
             }
         }
-        
-        &.touch {
-            >.removeIcon {
-                position: absolute;
-                display: block;
-                right: 0;
-                top: 0;
-                z-index: 3;
-                color: $red;
-                padding: 10px 7px;
-            }
+
+        >.removeIcon {
+            position: absolute;
+            display: block;
+            right: 2.6em;
+            top: 0;
+            z-index: 3;
+            color: $red;
+            padding: 9px 10px;
+            cursor: pointer;
+            opacity: .7;
+            font-size: 1.1em;
             
-            &.open {
-                .iconContainer {
-                    .calendarIcon {
-                        @include translateY(-100%);
-                    }
-                    .closeIcon {
-                        @include translateY(0);
-                    }
-                }
+            &:hover {
+                opacity: 1;
             }
         }
         
-        &:not(.touch) {
-            >.removeIcon {
-                display: none !important;
-            }
-            
-            &:not(.disable) {
-                .iconContainer {
-                    &:hover {
-                        .calendarIcon {
-                            @include translateY(100%);
-                        }
-                        .removeIcon {
-                            @include translateY(0);
-                        }
-                    }
+        &.open {
+            .iconContainer {
+                .calendarIcon {
+                    @include translateY(100%);
+                }
+                .closeIcon {
+                    @include translateY(0);
                 }
             }
         }
@@ -109,22 +187,22 @@ $ENfont: Tikal;
                 background: darken(white, 5%);
                 color: lighten(black, 50%);
             }
-            
+
             >.removeIcon {
                 display: none !important;
             }
-            
+
             .iconContainer {
                 cursor: not-allowed;
             }
         }
 
-        
+
         .iconContainer {
             cursor: pointer;
             overflow: hidden;
             position: relative;
-            
+
             .fakeIcon {
                 opacity: 0;
             }
@@ -134,29 +212,30 @@ $ENfont: Tikal;
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 100%;
                 padding: 9px;
                 @include transition(all .3s ceaser($easeInOutBack));
-            }
-            .removeIcon {
-                background: $red;
-                color: white;
-                @include translateY(-100%);
             }
             .closeIcon {
                 background: $blue;
                 color: white;
-                @include translateY(100%);
+                @include translateY(-100%);
             }
-            
+//            .closeIcon {
+//                background: $blue;
+//                color: white;
+//                @include translateY(100%);
+//            }
+
         }
     }
-    
+
     .ADMdtp-calendar-container {
         position: absolute;
         display: block;
-        width: 20em;
+        width: $dtpContainerWidth;
         max-width: 100vw;
+        min-height: $dtpContainerWidth;
+        max-height: 25.25em;
         padding: 1em;
         padding-top: 0;
         border-radius: 5px;
@@ -164,7 +243,7 @@ $ENfont: Tikal;
         overflow: hidden;
         z-index: 9;
         @include box-shadow(0 4px 8px rgba(0,0,0,.1));
-        @include transition(opacity .5s);
+        @include transition(opacity .5s, height .5s);
         font-size: 14px;
 
         ::-moz-selection {
@@ -175,9 +254,61 @@ $ENfont: Tikal;
             background: transparent;
         }
         
+        &.square {
+            height: $dtpContainerWidth;
+            
+            header {
+                .arrow {
+                    &.left {
+                        margin-left: -2em;
+                    }
+                    &.right {
+                        margin-right: -2em;
+                    }
+                }
+            }
+            .days>span>span {
+                //font-size: .5em;
+            }
+            footer {
+                height: 0;
+            }
+        }
+        
+        .arrow {
+            position: absolute;
+            display: block;
+            padding: 1em;
+            margin-top: 0.2em;
+            cursor: pointer;
+            z-index: 1;
+            top: 0;
+            color: $gray;
+            direction: ltr;
+            font-size: 1em;
+            @include transition(all .3s);
+
+            &.left {
+                left: 0;
+
+                &:hover {
+                    margin-left: -.3em;
+                    color: darken($warmBrown, 10%);
+                }
+            }
+            &.right {
+                right: 0;
+
+                &:hover {
+                    margin-right: -.3em;
+                    color: darken($warmBrown, 10%);
+                }
+            }
+        }
+
         header {
             font-size: 1.2em;
-            
+
             .yearMonth {
                 width: 100%;
                 position: relative;
@@ -185,39 +316,11 @@ $ENfont: Tikal;
                 text-align: center;
                 padding: 1em 0;
                 z-index: 0;
-                cursor: context-menu;
-                color: $gray;
-            }
-            
-            .glyphicon {
-                position: absolute;
-                display: block;
-                padding: 1em;
-                margin-top: 0.2em;
                 cursor: pointer;
-                z-index: 1;
                 color: $gray;
-                @include transition(all .3s);
-                
-                &.glyphicon-menu-left {
-                    left: 0;
-                    
-                    &:hover {
-                        margin-left: -.3em;
-                        color: darken($warmBrown, 10%);
-                    }
-                }
-                &.glyphicon-menu-right {
-                    right: 0;
-                    
-                    &:hover {
-                        margin-right: -.3em;
-                        color: darken($warmBrown, 10%);
-                    }
-                }
             }
         }
-        
+
         .daysNames, .days {
             width: 100%;
 
@@ -227,7 +330,7 @@ $ENfont: Tikal;
                 text-align: center;
             }
         }
-        
+
         .days {
             min-height: 12em;
         }
@@ -251,7 +354,7 @@ $ENfont: Tikal;
                     position: relative;
                     display: block;   
                     @include backface-visibility(hidden);
-                    
+
                     &.disable {
                         opacity: .5;
                         cursor: context-menu;
@@ -289,13 +392,13 @@ $ENfont: Tikal;
                             border-right: 2px solid lighten($mainColor, 25%);
                         }
                     }
-                    
+
                     &.notValid {
-                        
+
                     }
 
                     &.today {
-                        
+
                         &:after {
                             content: '';
                             position: absolute;
@@ -309,224 +412,407 @@ $ENfont: Tikal;
                         }
                     }
                 }
-                
-                
+
+
                 @for $i from 1 through 50 {
                     &:nth-child(#{$i})>span { 
                         @include transition(all .5s, transform .2s #{$i*.01}s ceaser($easeInOutBack));
-                    }
-                }
-                
-                
-                
-                
-                
-                
-            }
-            
-            &.loading {
-                >span>span {
-                    @include create-transform($trans-x:-10px, $rotate-y: 90deg);
                 }
             }
-        }
-        
-        footer {
-            height: 2em;
-   
-            .today {
-                position: absolute;
-                display: block;
-                width: 4em;
-                height: 1.7em;
-                bottom: 1em;
-                left: 0;
-                right: 0;
-                margin: 0 auto;
-                border-radius: .5em;
-                background: transparent;
-                color: darken($warmBrown, 20%);
-                border: 1px solid transparent;
-                text-align: center;
-                outline: none;
-                font-family: $ENfont;
-                @include transition(all .3s);
-                
-                &:hover {
-                    border-color: #f2f2f2;
-                }
-                
-                &:active {
-                    background: lighten($warmBrown, 20%);
-                }
-            }
-            
-            .calTypeContainer {
-                position: absolute;
-                display: block;
-                width: 5.5em;
-                height: 1.7em;
-                bottom: 1em;
-                right: .5em;
-                overflow: hidden;
-                cursor: pointer;
-                border-radius: .5em;
-                border: 1px solid transparent;
-                @include transition(all .3s);
-                
-                &:hover {
-                    border-color: #f2f2f2;
 
-                    &.gregorian {
-                        p.jalali {
-                            background: $warmBrown;
-                        }
-                    }
-                    &.jalali {
-                        p.gregorian {
-                            background: $warmBrown;
-                        }
-                    }
-                }
 
-                &:active {
-                    background: lighten($warmBrown, 20%);
-                }
-                
-                p {
-                    margin: 0;
-                    text-align: center;
-                    position: absolute;
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                    padding: 0.1em 0;
-                    white-space: nowrap;
-                    font-family: $ENfont;
-                    color: darken($warmBrown, 20%);
-                    @include transition(all .3s, transform .3s ceaser($easeInOutBack));
-                    
-                    &.jalali {
-                        @include translateY(100%);
-                    }
-                }
-                
-                &.jalali {
-                    p {
-                        &.gregorian {
-                            @include translateY(-100%);
-                        }
-                        &.jalali {
-                            @include translateY(0);
-                        }
-                    }
-                }
+
+
+
+
+        }
+
+        &.loading {
+            >span>span {
+                @include create-transform($trans-x:-10px, $rotate-y: 90deg);
             }
         }
-        
-        hr {
-            margin: .5em 0;
-        }
-        
-        .timePickerContainer {
+    }
+
+    footer {
+        height: 2em;
+        position: relative;
+        overflow: hidden;
+
+        .today {
             position: absolute;
             display: block;
-            width: 100%;
-            height: 100%;
-            background: rgba(#ccc, .5);
-            top: 0;
+            width: 4em;
+            height: 1.7em;
             left: 0;
-            z-index: 9;
-            direction: ltr;
-            @include translateY(100%);
-            @include transition(all .7s ceaser($easeInOutBack));
+            right: 0;
+            margin: 0 auto;
+            border-radius: .5em;
+            background: transparent;
+            color: darken($warmBrown, 20%);
+            border: 1px solid transparent;
+            text-align: center;
+            outline: none;
+            //font-family: $ENfont;
+            @include transition(all .3s);
 
-            &.active {
-                background: rgba(#fff, .95);
-                @include translateY(0);
-                
-                .timeSelectIcon {
-                    @include translate(0, 0);
+            &:hover {
+                border-color: #f2f2f2;
+            }
+
+            &:active {
+                background: lighten($warmBrown, 20%);
+            }
+        }
+
+        .calTypeContainer {
+            position: absolute;
+            display: block;
+            width: 5.5em;
+            height: 1.7em;
+            right: 0;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: .5em;
+            border: 1px solid transparent;
+            @include transition(all .3s);
+
+            &:hover {
+                border-color: #f2f2f2;
+
+                &.gregorian {
+                    p.jalali {
+                        background: $warmBrown;
+                    }
+                }
+                &.jalali {
+                    p.gregorian {
+                        background: $warmBrown;
+                    }
                 }
             }
-            
-            .timeSelectIcon {
-                position: absolute;
-                display: block;
-                left: 0;
-                top: 0;
-                font-size: 1.5em;
-                padding: 0.7em;
-                margin-left: 0.2em;
-                color: $warmBrown;
-                cursor: pointer;
-                z-index: 2;
-                @include translate(0, -2.5em);
-                @include transition(all .5s);
 
-                &:hover {
-                    color: darken($warmBrown, 20%);
-                }
-
-                &:active {
-                    color: $warmBrown;
-                }
+            &:active {
+                background: lighten($warmBrown, 20%);
             }
-            
-            .timePicker {
+
+            p {
+                margin: 0;
+                text-align: center;
                 position: absolute;
                 display: block;
                 width: 100%;
-                top: 50%;
-                @include translateY(-50%);
-                
-                span {
-                    width: 33%;
-                    height: 3em;
-                    position: relative;
-                    display: inline-block;
-                    text-align: center;
-                    font-size: 1.3em;
-                    vertical-align: middle;
-                    line-height: 3em;
-                    
-                    &.glyphicon {
-                        cursor: pointer;
-                        color: $mainColor;
-                        
-                        &:hover {
-                            color: lighten($mainColor, 20%);
-                            
-                            &:before {
-                                background: lighten($warmBrown, 15%);
-                            }
-                        }
+                height: 100%;
+                padding: 0.1em 0;
+                white-space: nowrap;
+                //font-family: $ENfont;
+                color: darken($warmBrown, 20%);
+                @include transition(all .3s, transform .3s ceaser($easeInOutBack));
 
-                        &:active {
-                            color: $mainColor;
-                            
-                            &.glyphicon-chevron-up {
-                                margin-top: -3px;
-                            }
-                            
-                            &.glyphicon-chevron-down {
-                                margin-bottom: -3px;
-                            }
-                        }
-                        
-                        &:before {
-                            @include transition(all .5s);
-                            padding: .8em 1em;
-                            border-radius: 1em;
-                        }
+                &.jalali {
+                    @include translateY(100%);
+                }
+            }
+
+            &.jalali {
+                p {
+                    &.gregorian {
+                        @include translateY(-100%);
+                    }
+                    &.jalali {
+                        @include translateY(0);
+                    }
+                }
+            }
+        }
+        
+        .timeSelectIcon {
+            position: absolute;
+            display: block;
+            left: 0;
+            top: 0;
+            font-size: 1.5em;
+            padding: 0.1em;
+            margin-left: 0.2em;
+            color: $warmBrown;
+            cursor: pointer;
+            //@include translate(0, -2.5em);
+            @include transition(all .5s);
+
+            &:hover {
+                color: darken($warmBrown, 20%);
+            }
+
+            &:active {
+                color: $warmBrown;
+            }
+        }
+    }
+
+    hr {
+        margin: .5em 0;
+    }
+
+    .dtpNewBox {
+        $bgColor: darken(#fff, 3%);
+        
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 0;
+        background: $bgColor;
+        top: 0;
+        left: 0;
+        z-index: 9;
+        
+        direction: ltr;
+        //@include translateY(100%);
+        @include transition(all .5s);
+
+        &.active {
+            //background: rgba(#fff, .95);
+            //@include translateY(0);
+            opacity: 1;
+            height: $dtpContainerWidth;
+            
+            .timeSelectIcon {
+                @include translate(0, 0);
+            }
+            
+            .content {
+                opacity: 1;
+            }
+        }
+        
+        &:after, &:before {
+            content: '';
+            position: absolute;
+            display: block;
+            background: $bgColor;
+            height: 100%;
+            width: 1em;
+            top: 0;
+            z-index: 0;
+        }
+        &:after {
+            left: -1em;
+        }
+        &:before {
+            right: -1em;
+        }
+        
+        .content {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0;
+            @include transition(all .5s);
+        }
+
+        .dtpIcon.calendar {
+            $triWidth: 3em;
+            
+            position: absolute;
+            display: block;
+            top: .3em;
+            left: -.5em;
+            z-index: 1;
+            font-size: 1.2em;
+            width: 1em;
+            height: 1em;
+            text-align: center;
+            cursor: pointer;
+            color: white;
+            @include translate(-$triWidth, -$triWidth);
+            @include transition(all .5s);
+
+            &.show {
+                @include translate(0, 0);
+
+                
+            }
+
+            &:after {
+                
+
+                content: '';
+                position: absolute;
+                display: block;
+                top: -6px;
+                left: -6px;
+                width: 0;
+                height: 0;
+                border-top: $triWidth solid $mainColor;
+                border-right: $triWidth solid transparent;
+                z-index: -1;
+            }
+        }
+    }
+
+    .monthPickerContainer {
+        @extend .dtpNewBox;
+        
+        .monthContainer {
+            position: absolute;
+            display: block;
+            width: 100%;
+            top: 50%;
+            @include translateY(-50%);
+            
+            &.onYear {
+                span>span {
+                    width: calc(25% - 6px);
+                }
+            }
+            
+            &.rtl {
+                span>span {
+                    float: right;
+                }
+            }
+            
+            span>span {
+                $bgColor: #ebebeb;
+                $color: #a8a8a8;
+                
+                width: calc(33% - 6px);
+                text-align: center;
+                position: relative;
+                display: block;
+                float: left;
+                border-radius: .5em;
+                background: $bgColor;
+                color: $color;
+                border: 1px solid darken($bgColor, 5%);
+                padding: 1em 0;
+                margin: 3px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: .9em;
+                @include transition(all .5s);
+                
+                &.selected {
+                    border-color: darken($bgColor, 10%);
+                    background: darken($bgColor, 10%);
+                    color: darken($color, 20%);
+                }
+                
+                &:hover {
+                    @extend .selected;
+                }
+            }
+            
+            .yearContainer {
+                $bgColor: #ebebeb;
+                $color: #b9b9b9;
+                
+                color: $color;
+                text-align: center;
+                font-size: 1.8em;
+                margin-bottom: 0.2em;
+                
+                p {
+                    margin: 0;
+                    cursor: pointer;
+                    @include transition(all .3s);
+                    
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        display: block;
+                        width: 100%;
+                        border-bottom: 2px solid #ECECEC;
+                        top: 1em;
+                        left: 0;
+                        z-index: -1;
+                        @include transition(all .3s);
                     }
                     
-                    &.period {
-                        font-size: 2em;
+                    &:hover {
+                        color: $mainColor;
+                        
+                        &:before {
+                            border-color: rgba($mainColor, .2);
+                        }
+                    }
+                }
+                
+                .arrow {
+                    font-size: .9em;
+                    margin-top: -0.2em;
+                    padding: .5em;
+                    opacity: .7;
+                    
+                    &.right {
+                        right: 1.5em;
+                    }
+                    &.left {
+                        left: 1.5em;
                     }
                 }
             }
         }
     }
+
+    .timePickerContainer {
+        @extend .dtpNewBox;
+
+        .timePicker {
+            position: absolute;
+            display: block;
+            width: 100%;
+            top: 50%;
+            @include translateY(-50%);
+
+            span {
+                width: 33%;
+                height: 3em;
+                position: relative;
+                display: inline-block;
+                text-align: center;
+                font-size: 1.3em;
+                vertical-align: middle;
+                line-height: 3em;
+
+                &.glyphicon {
+                    cursor: pointer;
+                    color: $mainColor;
+
+                    &:hover {
+                        color: lighten($mainColor, 20%);
+
+                        &:before {
+                            background: lighten($warmBrown, 15%);
+                        }
+                    }
+
+                    &:active {
+                        color: $mainColor;
+
+                        &.glyphicon-chevron-up {
+                            margin-top: -3px;
+                        }
+
+                        &.glyphicon-chevron-down {
+                            margin-bottom: -3px;
+                        }
+                    }
+
+                    &:before {
+                        @include transition(all .5s);
+                        padding: .8em 1em;
+                        border-radius: 1em;
+                    }
+                }
+
+                &.period {
+                    font-size: 2em;
+                }
+            }
+        }
+    }
+}
 }
 
