@@ -65,7 +65,7 @@
 /* line 79, ../scss/ADM-dateTimePicker.scss */
 .ADMdtp-container ng-transclude, .ADMdtp-container .clickOutContainer {
   position: relative;
-  display: table;
+  display: block;
 }
 /* line 85, ../scss/ADM-dateTimePicker.scss */
 .ADMdtp-container .masterInput {
