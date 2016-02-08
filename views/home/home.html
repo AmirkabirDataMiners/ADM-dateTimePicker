@@ -5,18 +5,31 @@
 <!--        <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&type=follow&count=true" frameborder="0" scrolling="0" width="230px" height="20px"></iframe>-->
         <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&repo=ADM-dateTimePicker&type=watch&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
         <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&repo=ADM-dateTimePicker&type=fork&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
-        <img src="https://img.shields.io/badge/npm-v1.0.0-brightgreen.svg" alt="">
+        <img src="https://img.shields.io/badge/npm-v1.1.0-brightgreen.svg" alt="">
         <img src="https://img.shields.io/badge/Pure-AngularJs-red.svg" alt="">
         <img src="http://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat" alt="">
 
     </h1>
     <hr>
     <br>
-    <h2><strong>Tags</strong></h2>
-    <hr>
-    <div class="keyWords">
-        <pre class="inline">AngularJs</pre> <pre class="inline">Gregorian</pre> <pre class="inline">Jalali</pre> <pre class="inline">DateTimePicker</pre> <pre class="inline">Two calendar in one datePicker</pre> <pre class="inline">RangePicker</pre> <pre class="inline">Update range limitation automatilcy</pre> <pre class="inline">Disabling pattern</pre> <pre class="inline">Responsive</pre> <pre class="inline">UNIX</pre> <pre class="inline">SASS</pre> <pre class="inline">Compass</pre> <pre class="inline">Bootstrap</pre>
-    </div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid newFeatures">
+            <div class="navbar-header">
+                <img class="version" src="https://img.shields.io/badge/Updates-v1.1.0-85DEF9.svg" alt="">
+                <br>
+                <ul>
+                    <li>Remove all other dependencies. (Bootstrap, Glyphicon, Fonts)</li>
+                    <li>Add month and year quick select.</li>
+                    <li>Date format is now fully customize with any combination of YYYY, YY, MM, DD, hh, mm.</li>
+                    <li>Add custom input template option inside directive.</li>
+                    <li>Add option to freeze input to prevent user from changing text.</li>
+                    <li>Add option to hide time from dateTimePicker.</li>
+                    <li>Add option to auto select current day, by puting 'today' in default parameter.</li>
+                    <li>Fix bugs on IE9.</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <br>
     <h2><strong>Implementation steps</strong></h2>
     <hr>
@@ -30,7 +43,6 @@ npm install adm-dtp
 &lt;!doctype html&gt;
 &lt;html ng-app="myApp"&gt;
     &lt;head&gt;
-        &lt;link rel="stylesheet" href="css/bootstrap.min.css" /&gt;
         &lt;link rel="stylesheet" href="css/ADM-dateTimePicker.css" /&gt;
         &lt;script src="js/angular.min.js"&gt;&lt;/script&gt;
         &lt;script src="js/ADM-dateTimePicker.min.js"&gt;&lt;/script&gt;
@@ -62,7 +74,8 @@ var app = angular.module('myApp', ['ADM-dateTimePicker']);
 app.config(['ADMdtpProvider', function(ADMdtp) {
     ADMdtp.setOptions({
         calType: 'gregorian',
-        format: 'YYYY/MM/DD HH:MM',
+        format: 'YYYY/MM/DD hh:mm',
+        default: 'today',
         ...
     });
 }]);
@@ -81,12 +94,12 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
             <h3>Example:</h3>
         </div>
         <div class="col-xs-12 col-sm-6">
-            Gregorian - YYYY/MM/DD HH:MM
-            <adm-dtp ng-model="date1" options='{default: 1450197600000}'></adm-dtp>
+            Gregorian - Date: YY-MM-DD  Time: (hh:mm)
+            <adm-dtp ng-model="date1" options='{format: "Date: YY-MM-DD  Time: (hh:mm)", default: "today"}'></adm-dtp>
         </div>
         <div class="col-xs-12 col-sm-6">
             Jalali - YYYY/MM/DD
-            <adm-dtp ng-model="date2" options='{calType: "jalali", format: "YYYY/MM/DD", default: 1450197600000}'></adm-dtp>
+            <adm-dtp ng-model="date2" options='{calType: "jalali", format: "YYYY/MM/DD", default: "today"}'></adm-dtp>
         </div>
     </div>
     <br>
@@ -111,6 +124,38 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
                 </tr>
             </tbody>
         </table>
+    </div>
+    
+    <br>
+    <h2><strong>Custom input template</strong></h2>
+    <hr>
+    You can put custom input template inside <pre class="inline">&lt;adm-dtp&gt;&lt;/adm-dtp&gt;</pre> but with unwanted limits.<br>
+    <br>
+<div hljs no-escape class="customCode">
+&lt;!-- all optional actions --&gt;
+&lt;adm-dtp ng-model='date' full-data='date_details'&gt;
+    &lt;!-- fully access to 'date' and 'date_details' parameters --&gt;
+    
+    &lt;!-- input is optional too, but must use in this format --&gt;
+    &lt;input type='text' ng-model='date' dtp-input /&gt;
+    
+    &lt;!-- attributes name are important, not tags name --&gt;
+    &lt;button dtp-open &gt; Open calendar &lt;/button&gt;
+    &lt;button dtp-close &gt; Close calendar &lt;/button&gt;
+    &lt;button dtp-toggle &gt; Toggle calendar &lt;/button&gt;
+    &lt;button dtp-destroy &gt; Destroy calendar &lt;/button&gt;
+&lt;/adm-dtp&gt;
+</div>   
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12">
+            <adm-dtp ng-model="date16" options='{format: "Date: YYYY-MM-DD  Time: (hh:mm)", default: "today"}'>
+               <button class="btn btn-success" dtp-toggle style="display: block;">{{date16}}</button>
+            </adm-dtp>
+        </div>
     </div>
     
     <br>
@@ -255,7 +300,7 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
         </div>
         <div class="col-xs-12 col-sm-4">
            To:
-            <adm-dtp ng-model="date5" options="{calType:'jalali'}" full-data="date5_full" mindate="{{date4_full.unix}}"></adm-dtp>
+            <adm-dtp ng-model="date5" full-data="date5_full" mindate="{{date4_full.unix}}"></adm-dtp>
         </div>
         <div class="col-xs-12 col-sm-4">
            From - To:
