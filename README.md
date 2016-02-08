@@ -7,6 +7,8 @@
 
 *Pure AngularJs Gregorian and Jalali smart dateTimePicker by [ADM | Amirkabir Data Miners](https://adm-co.net)*
 
+![ADM-dateTimePicker cover](http://amirkabirdataminers.github.io/ADM-dateTimePicker/images/cover.jpg)
+
 ### Updates in V1.1.0
 * Remove all other dependencies. (Bootstrap, Glyphicon, Fonts)
 * Add month and year quick select.
