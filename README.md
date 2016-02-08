@@ -1,5 +1,5 @@
 # ADM-dateTimePicker  
-![Version](https://img.shields.io/badge/npm-v1.0.0-brightgreen.svg)
+![Version](https://img.shields.io/badge/npm-v1.1.0-brightgreen.svg)
 &nbsp;
 ![AngularJs](https://img.shields.io/badge/Pure-AngularJs-red.svg)
 &nbsp;
@@ -7,8 +7,15 @@
 
 *Pure AngularJs Gregorian and Jalali smart dateTimePicker by [ADM | Amirkabir Data Miners](https://adm-co.net)*
 
-### Tags  
-`AngularJs` `Gregorian` `Jalali` `DateTimePicker` `Two calendar in one datePicker` `RangePicker` `Update range limitation automatilcy` `Disabling pattern` `Responsive` `UNIX` `SASS` `Compass` `Bootstrap`
+### Updates in V1.1.0
+* Remove all other dependencies. (Bootstrap, Glyphicon, Fonts)
+* Add month and year quick select.
+* Date format is now fully customize with any combination of YYYY, YY, MM, DD, hh, mm.
+* Add custom input template option inside directive.
+* Add option to freeze input to prevent user from changing text.
+* Add option to hide time from dateTimePicker.
+* Add option to auto select current day, by puting 'today' in default parameter.
+* Fix bugs on IE9.
 
 ---
 
@@ -28,7 +35,6 @@ npm install adm-dtp
 <!doctype html>
 <html ng-app="myApp">
     <head>
-        <link rel="stylesheet" href="css/bootstrap.min.css" />
         <link rel="stylesheet" href="css/ADM-dateTimePicker.css" />
         <script src="js/angular.min.js"></script>
         <script src="js/ADM-dateTimePicker.min.js"></script>
@@ -55,6 +61,7 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
     ADMdtp.setOptions({
         calType: 'gregorian',
         format: 'YYYY/MM/DD HH:MM',
+        default: 'today',
         ...
     });
 }]);
@@ -69,14 +76,34 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
 #### Quick look
 Name  |	Type  |	Default |	Description
 ------------- | ------------- | ------------- | -------------
-default | Number, String, Date | -- | Initial date can be Number(UNIX), String or Date
-calType | String | gregorian | gregorian & jalali are available
+calType | String | 'gregorian' | 'gregorian' & 'jalali' are available
+dtpType	| String | 'date&time' | 'date&time' & 'date' are available. (expect 'time' in next version)
+default | Number, String, Date | -- | Initial date can be Number(UNIX), String or Date and also word 'today' for auto set current date
 disabled | Array | -- | Disable specific days with format of String, Date and UNIX, or days with pattern of 'i+[NUM]' and '[NUM]d+[NUM]
+freezeInput | Boolean | false | Freeze input to prevent user changing text
 smartDisabling | Boolean | true | Whether change Sunday from Gregorian calendar to Friday in Jalali calendar by switching calendar type or not
-format | String | YYYY/MM/DD HH:MM | MM/DD/YYYY & MM/DD/YYYY HH:MM & YYYY/MM/DD & YYYY/MM/DD HH:MM are available
+format | String | 'YYYY/MM/DD hh:mm' | Any combination of YYYY, YY, MM, DD, hh, mm. (e.g. YY/MM/DD, MM-DD (hh:mm))
 multiple | Boolean | true | Whether user can change calendar type or not
 autoClose | Boolean | false | Closing ADMdtp on selecting a day
 transition | Boolean | true | Transition on loading days
+---
+### Custom input template
+You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted limits.
+```html
+<!-- all optional actions -->
+<adm-dtp ng-model='date' full-data='date_details'>
+    <!-- fully access to 'date' and 'date_details' parameters -->
+    
+    <!-- input is optional too, but must use in this format -->
+    <input type='text' ng-model='date' dtp-input />
+    
+    <!-- attributes name are important, not tags name -->
+    <button dtp-open > Open calendar </button>
+    <button dtp-close > Close calendar </button>
+    <button dtp-toggle > Toggle calendar </button>
+    <button dtp-destroy > Destroy calendar </button>
+</adm-dtp>
+```
 ---
 ### Disabling days
 #### Disable specific days
