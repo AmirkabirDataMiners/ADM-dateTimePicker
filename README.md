@@ -1,6 +1,8 @@
 # ADM-dateTimePicker  
 ![Version](https://img.shields.io/badge/npm-v1.1.1-brightgreen.svg)
 &nbsp;
+![Version](https://img.shields.io/badge/bower-v1.1.1-brightgreen.svg)
+&nbsp;
 ![AngularJs](https://img.shields.io/badge/Pure-AngularJs-red.svg)
 &nbsp;
 ![License MIT](http://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat)
@@ -31,6 +33,7 @@ See ADMdtp live [HERE](https://amirkabirdataminers.github.io/ADM-dateTimePicker)
 #### Step 1: Install ADM-dateTimePicker
 ````javascript
 npm install adm-dtp
+bower install adm-dtp
 ````
 #### Step 2: Include the files in your app
 ```html
