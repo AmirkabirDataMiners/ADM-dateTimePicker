@@ -39,6 +39,7 @@ bower install adm-dtp
 ```html
 <!doctype html>
 <html ng-app="myApp">
+<<<<<<< HEAD
 <head>
 <link rel="stylesheet" href="css/ADM-dateTimePicker.css" />
 <script src="js/angular.min.js"></script>
@@ -48,6 +49,17 @@ bower install adm-dtp
 <body>
 ...
 </body>
+=======
+    <head>
+        <link rel="stylesheet" href="css/ADM-dateTimePicker.css" />
+        <script src="js/angular.min.js"></script>
+        <script src="js/ADM-dateTimePicker.min.js"></script>
+        ...
+    </head>
+    <body>
+        ...
+    </body>
+>>>>>>> 704101e438957255cb877c8f07a94e009b0a55f8
 </html>
 ```
 #### Step 3: Inject the ADM-dateTimePicker module
@@ -63,12 +75,21 @@ var app = angular.module('myApp', ['ADM-dateTimePicker']);
 #### Set options for entire of app
 ```javascript
 app.config(['ADMdtpProvider', function(ADMdtp) {
+<<<<<<< HEAD
 ADMdtp.setOptions({
 calType: 'gregorian',
 format: 'YYYY/MM/DD hh:mm',
 default: 'today',
 ...
 });
+=======
+    ADMdtp.setOptions({
+        calType: 'gregorian',
+        format: 'YYYY/MM/DD hh:mm',
+        default: 'today',
+        ...
+    });
+>>>>>>> 704101e438957255cb877c8f07a94e009b0a55f8
 }]);
 ```
 #### Set options for each directive
@@ -97,6 +118,7 @@ You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted
 ```html
 <!-- all optional actions -->
 <adm-dtp ng-model='date' full-data='date_details'>
+<<<<<<< HEAD
 <!-- fully access to 'date' and 'date_details' parameters -->
 
 <!-- input is optional too, but must use in this format -->
@@ -107,6 +129,18 @@ You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted
 <button dtp-close > Close calendar </button>
 <button dtp-toggle > Toggle calendar </button>
 <button dtp-destroy > Destroy calendar </button>
+=======
+    <!-- fully access to 'date' and 'date_details' parameters -->
+    
+    <!-- input is optional too, but must use in this format -->
+    <input type='text' ng-model='date' dtp-input />
+    
+    <!-- attributes name are important, not tags name -->
+    <button dtp-open > Open calendar </button>
+    <button dtp-close > Close calendar </button>
+    <button dtp-toggle > Toggle calendar </button>
+    <button dtp-destroy > Destroy calendar </button>
+>>>>>>> 704101e438957255cb877c8f07a94e009b0a55f8
 </adm-dtp>
 ```
 ---
