@@ -1433,37 +1433,45 @@
         };
     }
 
-    var clickOutside = function($document) {
+    /* https://github.com/IamAdamJowett/angular-click-outside */
+    var clickOutside = function($document, $parse) {
         return {
             restrict: 'A',
             scope: {
                 clickOut: '&'
             },
             link: function ($scope, elem, attr) {
-                var classList = (attr.outsideIfNot !== undefined) ? attr.outsideIfNot.replace(', ', ',').split(',') : [];
-                if (attr.id == undefined) attr.$set('id', 'id_' + Math.random());
-                if (attr.id !== undefined) classList.push(attr.id);
+                var classList = (attr.outsideIfNot !== undefined) ? attr.outsideIfNot.replace(', ', ',').split(',') : [], fn = $parse(attr['clickOutside']);
+                if (attr.id !== undefined)
+                    classList.push(attr.id);
 
-                $document.on('click contextmenu', function (e) {
-                    var i = 0,
-                        element;
+                var eventHandler = function(e) {
+                    if(angular.element(elem).hasClass("ng-hide"))
+                        return;
 
-                    if (!e.target) return;
+                    var i = 0, element;
+                    if (!e || !e.target)
+                        return;
 
                     for (element = e.target; element; element = element.parentNode) {
-                        var id = element.id;
-                        var classNames = element.className;
+                        var id = element.id,
+                            classNames = element.className,
+                            l = classList.length;
 
-                        if (id !== undefined) {
-                            for (i = 0; i < classList.length; i++) {
-                                if (id.indexOf(classList[i]) > -1 || classNames.indexOf(classList[i]) > -1) {
-                                    return;
-                                }
-                            }
-                        }
+                        if (classNames && classNames.baseVal !== undefined)
+                            classNames = classNames.baseVal;
+
+                        for (i = 0; i < l; i++)
+                            if ((id !== undefined && id.indexOf(classList[i]) > -1) || (classNames && classNames.indexOf(classList[i]) > -1))
+                                return;
                     }
-
-                    $scope.$eval($scope.clickOut);
+                    return $scope.$applyAsync(function () {
+                        return fn($scope);
+                    });
+                };
+                $document.on('click', eventHandler);
+                $scope.$on('$destroy', function() {
+                    $document.off('click', eventHandler);
                 });
             }
         };
@@ -1497,6 +1505,6 @@
         .factory('ADMdtpFactory', ['ADMdtpConvertor', ADMdtpFactory])
         .directive('admDtp', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$compile', '$timeout', ADMdtpDirective])
         .directive('admDtpCalendar', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$timeout', ADMdtpCalendarDirective])
-        .directive('clickOut', ['$document', clickOutside])
+        .directive('clickOut', ['$document', '$parse', clickOutside])
         .config(['ADMdtpProvider', ADMdtpConfig]);
 }(window.angular));
