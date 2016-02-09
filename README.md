@@ -39,15 +39,15 @@ bower install adm-dtp
 ```html
 <!doctype html>
 <html ng-app="myApp">
-<head>
-<link rel="stylesheet" href="css/ADM-dateTimePicker.css" />
-<script src="js/angular.min.js"></script>
-<script src="js/ADM-dateTimePicker.min.js"></script>
-...
-</head>
-<body>
-...
-</body>
+    <head>
+        <link rel="stylesheet" href="css/ADM-dateTimePicker.css" />
+        <script src="js/angular.min.js"></script>
+        <script src="js/ADM-dateTimePicker.min.js"></script>
+        ...
+    </head>
+    <body>
+        ...
+    </body>
 </html>
 ```
 #### Step 3: Inject the ADM-dateTimePicker module
@@ -63,12 +63,12 @@ var app = angular.module('myApp', ['ADM-dateTimePicker']);
 #### Set options for entire of app
 ```javascript
 app.config(['ADMdtpProvider', function(ADMdtp) {
-ADMdtp.setOptions({
-calType: 'gregorian',
-format: 'YYYY/MM/DD hh:mm',
-default: 'today',
-...
-});
+    ADMdtp.setOptions({
+        calType: 'gregorian',
+        format: 'YYYY/MM/DD hh:mm',
+        default: 'today',
+        ...
+    });
 }]);
 ```
 #### Set options for each directive
@@ -97,16 +97,16 @@ You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted
 ```html
 <!-- all optional actions -->
 <adm-dtp ng-model='date' full-data='date_details'>
-<!-- fully access to 'date' and 'date_details' parameters -->
+    <!-- fully access to 'date' and 'date_details' parameters -->
 
-<!-- input is optional too, but must use in this format -->
-<input type='text' ng-model='date' dtp-input />
+    <!-- input is optional too, but must use in this format -->
+    <input type='text' ng-model='date' dtp-input />
 
-<!-- attributes name are important, not tags name -->
-<button dtp-open > Open calendar </button>
-<button dtp-close > Close calendar </button>
-<button dtp-toggle > Toggle calendar </button>
-<button dtp-destroy > Destroy calendar </button>
+    <!-- attributes name are important, not tags name -->
+    <button dtp-open > Open calendar </button>
+    <button dtp-close > Close calendar </button>
+    <button dtp-toggle > Toggle calendar </button>
+    <button dtp-destroy > Destroy calendar </button>
 </adm-dtp>
 ```
 ---
@@ -119,14 +119,14 @@ You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted
 #### Disable with pattern
 Currently two types of patterns are availble:
 * Days in a week: `i+[NUM]`
-* `i` -> will disable all Sundays in Gregorain calendar or Saturdays in Jalali calendars
-* `i+6` -> will disable all Saturdays in Gregorain calendar or Fridays in Jalali calendars
-* ...
+    * `i` -> will disable all Sundays in Gregorain calendar or Saturdays in Jalali calendars
+    * `i+6` -> will disable all Saturdays in Gregorain calendar or Fridays in Jalali calendars
+    * ...
 * Days in a month: `[NUM]d+[NUM]`
-* `d+1` -> will disable the second day of all months
-* `2d` -> will disable the even days of all months
-* `2d+1` -> will disable the odd days of all months
-* ...
+    * `d+1` -> will disable the second day of all months
+    * `2d` -> will disable the even days of all months
+    * `2d+1` -> will disable the odd days of all months
+    * ...
 
 ##### Inverse disabling:
 putting **Exclamation mark (!)** at the begining of the pattern will inverse disabling pattern:
@@ -153,19 +153,19 @@ Beside ngModel you can access to date full details throw `full-data` attribute.
 `date_details` contains following parameters:
 ```javascript
 {
-formated: "2015/12/15",
-gDate: 2015-12-15T16:40:00.000Z,
-//gDate is Date format of selected date in Gregorian calendar
-unix: 1450197600000,
-year: 2015,
-month: 12,
-day: 15,
-hour: 20,
-minute: 10,
-minDate: null,
-maxDate: null,
-calType: "gregorian",
-format: "YYYY/MM/DD"
+    formated: "2015/12/15",
+    gDate: 2015-12-15T16:40:00.000Z,
+    //gDate is Date format of selected date in Gregorian calendar
+    unix: 1450197600000,
+    year: 2015,
+    month: 12,
+    day: 15,
+    hour: 20,
+    minute: 10,
+    minDate: null,
+    maxDate: null,
+    calType: "gregorian",
+    format: "YYYY/MM/DD"
 }
 ```
 ---
