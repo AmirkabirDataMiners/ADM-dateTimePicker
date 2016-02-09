@@ -1434,44 +1434,37 @@
     }
 
     /* https://github.com/IamAdamJowett/angular-click-outside */
-    var clickOutside = function($document, $parse) {
+    var clickOutside = function($document) {
         return {
             restrict: 'A',
             scope: {
                 clickOut: '&'
             },
             link: function ($scope, elem, attr) {
-                var classList = (attr.outsideIfNot !== undefined) ? attr.outsideIfNot.replace(', ', ',').split(',') : [], fn = $parse(attr['clickOutside']);
-                if (attr.id !== undefined)
-                    classList.push(attr.id);
+                var classList = (attr.outsideIfNot !== undefined) ? attr.outsideIfNot.replace(', ', ',').split(',') : [];
+                if (attr.id == undefined) attr.$set('id', 'id_' + Math.random());
+                if (attr.id !== undefined) classList.push(attr.id);
 
-                var eventHandler = function(e) {
-                    if(angular.element(elem).hasClass("ng-hide"))
-                        return;
+                $document.on('click contextmenu', function (e) {
+                    var i = 0,
+                        element;
 
-                    var i = 0, element;
-                    if (!e || !e.target)
-                        return;
+                    if (!e.target) return;
 
                     for (element = e.target; element; element = element.parentNode) {
-                        var id = element.id,
-                            classNames = element.className,
-                            l = classList.length;
+                        var id = element.id;
+                        var classNames = element.className;
 
-                        if (classNames && classNames.baseVal !== undefined)
-                            classNames = classNames.baseVal;
-
-                        for (i = 0; i < l; i++)
-                            if ((id !== undefined && id.indexOf(classList[i]) > -1) || (classNames && classNames.indexOf(classList[i]) > -1))
-                                return;
+                        if (id !== undefined) {
+                            for (i = 0; i < classList.length; i++) {
+                                if (id.indexOf(classList[i]) > -1 || (typeof classNames == 'string' && classNames.indexOf(classList[i]) > -1)) {
+                                    return;
+                                }
+                            }
+                        }
                     }
-                    return $scope.$applyAsync(function () {
-                        return fn($scope);
-                    });
-                };
-                $document.on('click', eventHandler);
-                $scope.$on('$destroy', function() {
-                    $document.off('click', eventHandler);
+
+                    $scope.$eval($scope.clickOut);
                 });
             }
         };
@@ -1505,6 +1498,6 @@
         .factory('ADMdtpFactory', ['ADMdtpConvertor', ADMdtpFactory])
         .directive('admDtp', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$compile', '$timeout', ADMdtpDirective])
         .directive('admDtpCalendar', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$timeout', ADMdtpCalendarDirective])
-        .directive('clickOut', ['$document', '$parse', clickOutside])
+        .directive('clickOut', ['$document', clickOutside])
         .config(['ADMdtpProvider', ADMdtpConfig]);
 }(window.angular));
