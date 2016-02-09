@@ -982,9 +982,9 @@
             transclude: true,
             require: 'ngModel',
             scope: {
-                options: '=',
-                fullData: '=',
-                ngDisabled: '=',
+                options: '=?',
+                fullData: '=?',
+                ngDisabled: '=?',
                 onChange: '&',
                 onDatechange: '&',
                 onTimechange: '&',
