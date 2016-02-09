@@ -1,5 +1,7 @@
 # ADM-dateTimePicker  
-![Version](https://img.shields.io/badge/npm-v1.0.0-brightgreen.svg)
+![Version](https://img.shields.io/badge/npm-v1.1.1-brightgreen.svg)
+&nbsp;
+![Version](https://img.shields.io/badge/bower-v1.1.1-brightgreen.svg)
 &nbsp;
 ![AngularJs](https://img.shields.io/badge/Pure-AngularJs-red.svg)
 &nbsp;
@@ -7,8 +9,17 @@
 
 *Pure AngularJs Gregorian and Jalali smart dateTimePicker by [ADM | Amirkabir Data Miners](https://adm-co.net)*
 
-### Tags  
-`AngularJs` `Gregorian` `Jalali` `DateTimePicker` `Two calendar in one datePicker` `RangePicker` `Update range limitation automatilcy` `Disabling pattern` `Responsive` `UNIX` `SASS` `Compass` `Bootstrap`
+![ADM-dateTimePicker cover](http://amirkabirdataminers.github.io/ADM-dateTimePicker/images/cover.jpg)
+
+### Updates in V1.1.0
+* Remove all other dependencies. (Bootstrap, Glyphicon, Fonts)
+* Add month and year quick select.
+* Date format is now fully customize with any combination of YYYY, YY, MM, DD, hh, mm.
+* Add custom input template option inside directive.
+* Add option to freeze input to prevent user from changing text.
+* Add option to hide time from dateTimePicker.
+* Add option to auto select current day, by puting 'today' in default parameter.
+* Fix bugs on IE9.
 
 ---
 
@@ -22,21 +33,21 @@ See ADMdtp live [HERE](https://amirkabirdataminers.github.io/ADM-dateTimePicker)
 #### Step 1: Install ADM-dateTimePicker
 ````javascript
 npm install adm-dtp
+bower install adm-dtp
 ````
 #### Step 2: Include the files in your app
 ```html
 <!doctype html>
 <html ng-app="myApp">
-    <head>
-        <link rel="stylesheet" href="css/bootstrap.min.css" />
-        <link rel="stylesheet" href="css/ADM-dateTimePicker.css" />
-        <script src="js/angular.min.js"></script>
-        <script src="js/ADM-dateTimePicker.min.js"></script>
-        ...
-    </head>
-    <body>
-        ...
-    </body>
+<head>
+<link rel="stylesheet" href="css/ADM-dateTimePicker.css" />
+<script src="js/angular.min.js"></script>
+<script src="js/ADM-dateTimePicker.min.js"></script>
+...
+</head>
+<body>
+...
+</body>
 </html>
 ```
 #### Step 3: Inject the ADM-dateTimePicker module
@@ -52,11 +63,12 @@ var app = angular.module('myApp', ['ADM-dateTimePicker']);
 #### Set options for entire of app
 ```javascript
 app.config(['ADMdtpProvider', function(ADMdtp) {
-    ADMdtp.setOptions({
-        calType: 'gregorian',
-        format: 'YYYY/MM/DD HH:MM',
-        ...
-    });
+ADMdtp.setOptions({
+calType: 'gregorian',
+format: 'YYYY/MM/DD hh:mm',
+default: 'today',
+...
+});
 }]);
 ```
 #### Set options for each directive
@@ -69,14 +81,34 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
 #### Quick look
 Name  |	Type  |	Default |	Description
 ------------- | ------------- | ------------- | -------------
-default | Number, String, Date | -- | Initial date can be Number(UNIX), String or Date
-calType | String | gregorian | gregorian & jalali are available
+calType | String | 'gregorian' | 'gregorian' & 'jalali' are available
+dtpType	| String | 'date&time' | 'date&time' & 'date' are available. (expect 'time' in next version)
+default | Number, String, Date | -- | Initial date can be Number(UNIX), String or Date and also word 'today' for auto set current date
 disabled | Array | -- | Disable specific days with format of String, Date and UNIX, or days with pattern of 'i+[NUM]' and '[NUM]d+[NUM]
+freezeInput | Boolean | false | Freeze input to prevent user changing text
 smartDisabling | Boolean | true | Whether change Sunday from Gregorian calendar to Friday in Jalali calendar by switching calendar type or not
-format | String | YYYY/MM/DD HH:MM | MM/DD/YYYY & MM/DD/YYYY HH:MM & YYYY/MM/DD & YYYY/MM/DD HH:MM are available
+format | String | 'YYYY/MM/DD hh:mm' | Any combination of YYYY, YY, MM, DD, hh, mm. (e.g. YY/MM/DD, MM-DD (hh:mm))
 multiple | Boolean | true | Whether user can change calendar type or not
 autoClose | Boolean | false | Closing ADMdtp on selecting a day
 transition | Boolean | true | Transition on loading days
+---
+### Custom input template
+You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted limits.
+```html
+<!-- all optional actions -->
+<adm-dtp ng-model='date' full-data='date_details'>
+<!-- fully access to 'date' and 'date_details' parameters -->
+
+<!-- input is optional too, but must use in this format -->
+<input type='text' ng-model='date' dtp-input />
+
+<!-- attributes name are important, not tags name -->
+<button dtp-open > Open calendar </button>
+<button dtp-close > Close calendar </button>
+<button dtp-toggle > Toggle calendar </button>
+<button dtp-destroy > Destroy calendar </button>
+</adm-dtp>
+```
 ---
 ### Disabling days
 #### Disable specific days
@@ -87,24 +119,24 @@ transition | Boolean | true | Transition on loading days
 #### Disable with pattern
 Currently two types of patterns are availble:
 * Days in a week: `i+[NUM]`
-  * `i` -> will disable all Sundays in Gregorain calendar or Saturdays in Jalali calendars
-  * `i+6` -> will disable all Saturdays in Gregorain calendar or Fridays in Jalali calendars
-  * ...
+* `i` -> will disable all Sundays in Gregorain calendar or Saturdays in Jalali calendars
+* `i+6` -> will disable all Saturdays in Gregorain calendar or Fridays in Jalali calendars
+* ...
 * Days in a month: `[NUM]d+[NUM]`
-  * `d+1` -> will disable the second day of all months
-  * `2d` -> will disable the even days of all months
-  * `2d+1` -> will disable the odd days of all months
-  * ...
+* `d+1` -> will disable the second day of all months
+* `2d` -> will disable the even days of all months
+* `2d+1` -> will disable the odd days of all months
+* ...
 
 ##### Inverse disabling:
-  putting **Exclamation mark (!)** at the begining of the pattern will inverse disabling pattern:
+putting **Exclamation mark (!)** at the begining of the pattern will inverse disabling pattern:
 * `!i+6` -> just Saturdays in Gregorain calendar or Fridays in Jalali calendars are available
 * `!2d+1` -> it's exactly like `2d`
 
 ##### Combine patterns:
-  patterns of the same type can be combine with **Ampersand (&)**. 
-  mention that `['2d+1', '7d']` and `['2d+1&7d']` are equal, but `['!2d+1', '!7d']` and `['!2d+1&7d']` are completely differents. 
-  
+patterns of the same type can be combine with **Ampersand (&)**. 
+mention that `['2d+1', '7d']` and `['2d+1&7d']` are equal, but `['!2d+1', '!7d']` and `['!2d+1&7d']` are completely differents. 
+
 ##### Smart disabling:
 `i` in Gregorian calendar will disable Sundays (weekend) that is equal to Fridays (weekend) in Jalali calendar.  
 option `smartDisabling: true` change Sunday from Gregorian calendar to Friday in Jalali calendar by switching calendar type,  
@@ -121,19 +153,19 @@ Beside ngModel you can access to date full details throw `full-data` attribute.
 `date_details` contains following parameters:
 ```javascript
 {
-    formated: "2015/12/15",
-    gDate: 2015-12-15T16:40:00.000Z,
-    //gDate is Date format of selected date in Gregorian calendar
-    unix: 1450197600000,
-    year: 2015,
-    month: 12,
-    day: 15,
-    hour: 20,
-    minute: 10,
-    minDate: null,
-    maxDate: null,
-    calType: "gregorian",
-    format: "YYYY/MM/DD"
+formated: "2015/12/15",
+gDate: 2015-12-15T16:40:00.000Z,
+//gDate is Date format of selected date in Gregorian calendar
+unix: 1450197600000,
+year: 2015,
+month: 12,
+day: 15,
+hour: 20,
+minute: 10,
+minDate: null,
+maxDate: null,
+calType: "gregorian",
+format: "YYYY/MM/DD"
 }
 ```
 ---
