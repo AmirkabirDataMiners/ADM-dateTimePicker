@@ -14,53 +14,74 @@ $mainColor: $orange;
 $todayColor: $warmBrown;
 $dtpContainerWidth: 20em;
 
-@font-face {
-    font-family: minifontawesome;
-    src: url(#minifontawesomeregular);
-}
+
 
 $FAfont: Tahoma;
 $ENfont: sans-serif;
 
+// RESET
+html {
+    font-family: sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+hr {
+    height: 0;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+a:active,
+a:hover {
+    outline: 0;
+}
+
+// END RESET
+@font-face {
+    font-family: 'minifontawesome';
+    src: url("../fonts/font.svg#minifontawesomeregular") format("svg");
+}
+
 .dtpIcon {
     display: inline-block;
     font-size: inherit;
-    font: normal normal normal 14px/1 fontawesome;
+    font: normal normal normal 14px/1 minifontawesome;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     
-    &.cross:before {
-        content: '\f00d';
-    }
     &.left:before {
         content: '\276E';
     }
     &.right:before {
         content: '\276F';
     }
-    &.returnArrow:before {
-        content: '\21B6';
-    }
-    &.clock:before {
-        content: '\f017';
-    }
-    &.calendar:before {
-        content: '\f073';
-    }
-    &.off:before {
-        content: '\f011';
-    }
     &.null:before {
         content: '\f1fe';
         color: transparent;
-        opacity: 0;
     }
     
 }
 
 .ADMdtp-container {
     font-family: $ENfont, sans-serif;
+    line-height: 1.42857143;
 
     &.rtl {
         font-family: $FAfont;
@@ -78,7 +99,7 @@ $ENfont: sans-serif;
 
     ng-transclude, .clickOutContainer {
         position: relative;
-        display: table;
+        display: block;
     }
 
     //Bootstrap inputGroup Style
@@ -157,14 +178,15 @@ $ENfont: sans-serif;
         >.removeIcon {
             position: absolute;
             display: block;
-            right: 2.6em;
+            right: 2.1em;
             top: 0;
             z-index: 3;
-            color: $red;
-            padding: 9px 10px;
+            fill: $red;
+            padding: 11px;
             cursor: pointer;
             opacity: .7;
             font-size: 1.1em;
+            height: 34px;
             
             &:hover {
                 opacity: 1;
@@ -174,10 +196,12 @@ $ENfont: sans-serif;
         &.open {
             .iconContainer {
                 .calendarIcon {
-                    @include translateY(100%);
+                    @include simple-transform($trans-y:100%, $rotate:180deg);
+//                    @include translateY(100%);
                 }
                 .closeIcon {
-                    @include translateY(0);
+                    @include simple-transform($trans-y:0, $rotate:180deg);
+//                    @include translateY(0);
                 }
             }
         }
@@ -212,13 +236,16 @@ $ENfont: sans-serif;
                 top: 0;
                 left: 0;
                 width: 100%;
+                height: 32px;
                 padding: 9px;
+                padding-top: 10px;
                 @include transition(all .3s ceaser($easeInOutBack));
+                @include simple-transform($trans-y:0, $rotate:180deg);
             }
             .closeIcon {
                 background: $blue;
-                color: white;
-                @include translateY(-100%);
+                fill: white;
+                @include simple-transform($trans-y:-100%, $rotate:180deg);
             }
 //            .closeIcon {
 //                background: $blue;
@@ -435,7 +462,7 @@ $ENfont: sans-serif;
     }
 
     footer {
-        height: 2em;
+        height: 1.7em;
         position: relative;
         overflow: hidden;
 
@@ -453,7 +480,8 @@ $ENfont: sans-serif;
             border: 1px solid transparent;
             text-align: center;
             outline: none;
-            //font-family: $ENfont;
+            font-family: inherit;
+            cursor: pointer;
             @include transition(all .3s);
 
             &:hover {
@@ -534,17 +562,19 @@ $ENfont: sans-serif;
             font-size: 1.5em;
             padding: 0.1em;
             margin-left: 0.2em;
-            color: $warmBrown;
+            fill: $warmBrown;
             cursor: pointer;
+            height: 23px;
             //@include translate(0, -2.5em);
             @include transition(all .5s);
-
+            @include rotateZ(180deg);
+            
             &:hover {
-                color: darken($warmBrown, 20%);
+                fill: darken($warmBrown, 20%);
             }
 
             &:active {
-                color: $warmBrown;
+                fill: $warmBrown;
             }
         }
     }
@@ -611,7 +641,7 @@ $ENfont: sans-serif;
             @include transition(all .5s);
         }
 
-        .dtpIcon.calendar {
+        .calendarIcon {
             $triWidth: 3em;
             
             position: absolute;
@@ -628,15 +658,19 @@ $ENfont: sans-serif;
             @include translate(-$triWidth, -$triWidth);
             @include transition(all .5s);
 
+            svg {
+                @include rotateZ(180deg);
+                height: 22px;
+                width: 17px;
+                fill: white;
+                margin-top: -5px;
+            }
+            
             &.show {
                 @include translate(0, 0);
-
-                
             }
 
             &:after {
-                
-
                 content: '';
                 position: absolute;
                 display: block;
@@ -776,12 +810,27 @@ $ENfont: sans-serif;
                 vertical-align: middle;
                 line-height: 3em;
 
-                &.glyphicon {
+                
+                &.dtpIcon {
                     cursor: pointer;
-                    color: $mainColor;
+                    svg {
+                        fill: $mainColor;
+                    }
 
+                    svg {
+                        height: 23px;
+                        position: absolute;
+                        display: block;
+                        width: 100%;
+                        top: 1.1em;
+                        left: 0;
+                        @include transition(all .5s);
+                    }
+                    
                     &:hover {
-                        color: lighten($mainColor, 20%);
+                        svg {
+                            fill: lighten($mainColor, 20%);
+                        }
 
                         &:before {
                             background: lighten($warmBrown, 15%);
@@ -789,13 +838,15 @@ $ENfont: sans-serif;
                     }
 
                     &:active {
-                        color: $mainColor;
+                        svg {
+                            fill: $mainColor;
+                        }
 
-                        &.glyphicon-chevron-up {
+                        &.up {
                             margin-top: -3px;
                         }
 
-                        &.glyphicon-chevron-down {
+                        &.down {
                             margin-bottom: -3px;
                         }
                     }
