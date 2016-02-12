@@ -9,7 +9,7 @@
   "main": [
     "dist/ADM-dateTimePicker.min.js",
     "dist/ADM-dateTimePicker.min.css"
-  ]
+  ],
   "moduleType": [
     "globals"
   ],
