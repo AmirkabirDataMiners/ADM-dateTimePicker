@@ -146,7 +146,7 @@ but `smartDisabling: false` makes no different.
 ```
 ---
 ### Full data
-Beside ngModel you can access to date full details throw `full-data` attribute.
+Beside ngModel you can access to date full details through `full-data` attribute.
 ```html
 <adm-dtp ng-model="date" full-data="date_details"></adm-dtp>
 ```
