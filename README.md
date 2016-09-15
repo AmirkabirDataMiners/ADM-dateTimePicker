@@ -94,6 +94,10 @@ transition | Boolean | true | Transition on loading days
 placeholder | String | '' | Adds datepicker placeholder
 hideTimeSelector | Boolean | false | Hides time button from calendar dropbox
 startsOnMonday | Boolean | false | Sets if the calendar starts on monday
+daysNames | Array | An array of strings with week days starting from Sunday
+monthsNames | Array | An array of month names starting from January
+todayStr | String | Translation string for today button
+gregorianStr | String | Translation string for Gregorian button
 ---
 ### Custom input template
 You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted limits.
@@ -231,7 +235,7 @@ app.controller('MainController', function ($scope) {
         daysNames: ['Нед', 'Пон', 'Вто', 'Сре', 'Чет', 'Пет', 'Саб'],
         monthsNames: ['Јан', 'Феб', 'Мар', 'Апр', 'Мај', 'Јун', 'Јул', 'Авг', 'Септ', 'Окт', 'Ное', 'Дек'],
         todayStr: 'Денес',
-        gregorianStr: 'Грегоријански',
+        gregorianStr: 'Грегоријански'
     }
 });
 ```
