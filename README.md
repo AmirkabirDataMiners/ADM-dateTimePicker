@@ -91,6 +91,8 @@ format | String | 'YYYY/MM/DD hh:mm' | Any combination of YYYY, YY, MM, DD, hh, 
 multiple | Boolean | true | Whether user can change calendar type or not
 autoClose | Boolean | false | Closing ADMdtp on selecting a day
 transition | Boolean | true | Transition on loading days
+placeholder | String | '' | Adds datepicker placeholder
+hideTimeSelector | Boolean | false | Hides time button from calendar dropbox
 ---
 ### Custom input template
 You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted limits.
