@@ -947,6 +947,11 @@
                     
                     scope.monthNames = scope.option.monthsNames || constants.calendars[scope.calType].monthsNames;
                     scope.daysNames = scope.option.daysNames || constants.calendars[scope.calType].daysNames;
+
+                    if (scope.option.startsOnMonday) {
+                        var sunDay = scope.daysNames.shift();
+                        scope.daysNames.push(sunDay);
+                    }
                     
                     var _cur = angular.copy(scope.current);
                     var _mainDate;
@@ -1014,6 +1019,11 @@
                 scope.monthNames = scope.option.monthsNames || constants.calendars[scope.calType].monthsNames;
                 scope.daysNames = scope.option.daysNames || constants.calendars[scope.calType].daysNames;
                 scope.timeoutValue = [0,0];
+
+                if (scope.option.startsOnMonday) {
+                    var sunDay = scope.daysNames.shift();
+                    scope.daysNames.push(sunDay);
+                }
 
                 scope.minDate = scope.mindate?new Date(scope.mindate):null;
                 scope.maxDate = scope.maxdate?new Date(scope.maxdate):null;
@@ -1334,8 +1344,13 @@
                             var _firstDayName = new Date(angular.copy(_currDay).setDate(1)).getDay();
 
                             var _days = [];
+                            var add = 0;
 
-                            var _diff = -1 * _firstDayName,
+                            if ($scope.option.startsOnMonday) {
+                                add = 1;
+                            }
+
+                            var _diff = -1 * _firstDayName + add,
                                 _ite_date, _disable = true;
                             var _lastValidStat = -1;
 

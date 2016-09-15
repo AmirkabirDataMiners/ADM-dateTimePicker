@@ -93,6 +93,7 @@ autoClose | Boolean | false | Closing ADMdtp on selecting a day
 transition | Boolean | true | Transition on loading days
 placeholder | String | '' | Adds datepicker placeholder
 hideTimeSelector | Boolean | false | Hides time button from calendar dropbox
+startsOnMonday | Boolean | false | Sets if the calendar starts on monday
 ---
 ### Custom input template
 You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted limits.
