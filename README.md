@@ -137,6 +137,9 @@ putting **Exclamation mark (!)** at the begining of the pattern will inverse dis
 patterns of the same type can be combine with **Ampersand (&)**. 
 mention that `['2d+1', '7d']` and `['2d+1&7d']` are equal, but `['!2d+1', '!7d']` and `['!2d+1&7d']` are completely differents. 
 
+#### Hide time selector
+Hide time selector from calendar by adding `hideTimeSelector` in your options.
+
 ##### Smart disabling:
 `i` in Gregorian calendar will disable Sundays (weekend) that is equal to Fridays (weekend) in Jalali calendar.  
 option `smartDisabling: true` change Sunday from Gregorian calendar to Friday in Jalali calendar by switching calendar type,  
@@ -210,4 +213,22 @@ No need to destroy datepickers anymore!
 <adm-dtp ng-model="date" on-datechange="dateChanged(date)"></adm-dtp>
 <!-- event on changing the time -->
 <adm-dtp ng-model="date" on-datechange="timeChanged(date)"></adm-dtp>
+```
+
+#### Translation
+Just add `daysNames`, `monthsNames`, `todayStr` and/or `gregorianStr` in the options that you are passing to the directive. If none are provided it will fall back to the default ones.
+
+```html
+<adm-dtp ng-model='date' options="datepickerOptions"></adm-dtp>
+```
+
+```javascript
+app.controller('MainController', function ($scope) {
+    $scope.datepickerOptions = {
+        daysNames: ['Нед', 'Пон', 'Вто', 'Сре', 'Чет', 'Пет', 'Саб'],
+        monthsNames: ['Јан', 'Феб', 'Мар', 'Апр', 'Мај', 'Јун', 'Јул', 'Авг', 'Септ', 'Окт', 'Ное', 'Дек'],
+        todayStr: 'Денес',
+        gregorianStr: 'Грегоријански',
+    }
+});
 ```
