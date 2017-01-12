@@ -3,9 +3,9 @@
  * 
  * Demo: http://amirkabirdataminers.github.io/ADM-dateTimePicker
  *
- * @version 1.1.0
+ * @version 1.1.5
  *
- * © 2016 Amirkabir Data Miners <info@adm-co.net> - www.adm-co.net
+ * © 2017 Amirkabir Data Miners <info@adm-co.net> - www.adm-co.net
  */
 
 (function(angular) {
@@ -32,6 +32,9 @@
     Number.prototype.lZero = function() {
         return (this<10 ? '0'+this : this);
     };
+    Date.prototype.dtp_shortDate = function () {
+        return this.getFullYear() + '/' + (this.getMonth() + 1) + '/' + this.getDate();
+    }
     
     var ADMdtpProvider = function() {
 
@@ -302,7 +305,7 @@
         }
         function getGregorianMonth(daysPassed) {
             var year = getGregorianYear(daysPassed);
-            var leaspYearCount = howManyGregorianLeapsYearPassed(year - 1);
+            var leaspYearCount = howManyGregorianLeapsYearPassed(year);
             daysPassed -= (year - 1) * 365 + leaspYearCount;
             var months = getGregorianMonths();
             var month = 0;
@@ -329,7 +332,7 @@
         }
 
         function getGregorianDayOfMonth(year, month, daysPassed) {
-            var leaspYearCount = howManyGregorianLeapsYearPassed(year - 1);
+            var leaspYearCount = howManyGregorianLeapsYearPassed(year);
             var months = getGregorianMonths();
             var sumOfMonths = 0;
             for (var i = 0; i < months.length; i++) {
@@ -369,6 +372,12 @@
             var day = getGregorianDayOfMonthByPassedDay(daysPassed);
             var month = getGregorianMonth(daysPassed);
             var year = getGregorianYear(daysPassed);
+            if (day == 0)
+            {
+                day = 31;
+                month = 12;
+                year--;
+            }
             return {
                 day: day,
                 month: month,
@@ -440,7 +449,7 @@
             var formats = ['YY/MM/DD', 'YY/MM/DD hh:mm', 'YY-MM-DD', 'YY-MM-DD hh:mm', 'MM/DD/YY', 'MM-DD-YY', 'MM/DD/YY hh:mm', 'MM-DD-YY hh:mm'];
             formats.unshift(format);
             
-            for(var i=0,j=format.length;i<j;i++) {
+            for(var i=0,j=formats.length;i<j;i++) {
                 var _isValid = new RegExp(formats[i].replace(/[a-z]+/gi, function(key) {
                     var _mustReplace = false;
                     if (key.indexOf('YY') != -1)
@@ -545,6 +554,8 @@
             
             else if (input instanceof Object)
                 _dateTime = input;
+            
+            if (!_dateTime) return false;
             
             var _date = [_dateTime.year, _dateTime.month, _dateTime.day];
             var _time = [_dateTime.hour, _dateTime.minute];
@@ -760,7 +771,7 @@
             link: function(scope, element, attrs, admDtp) {
                 
                 var _standValue;
-                if (!scope.dtpValue)
+                if (!scope.dtpValue.unix)
                     _standValue = new Date();                   
                 else
                     _standValue = new Date(scope.dtpValue.fullDate);
@@ -856,8 +867,7 @@
                     if (day.valid == 0)
                         return;
                     
-                    if (scope.dtpValue)
-                        scope.dtpValue.selected = false;
+                    scope.dtpValue.selected = false;
                     
                     admDtp.updateMasterValue(day, 'day');
                     
@@ -894,7 +904,7 @@
                     var _timeCopy = angular.copy(scope.time);
                     _timeCopy[variable] = _num.lZero();
                     
-                    if (scope.dtpValue) {
+                    if (scope.dtpValue.unix) {
                         if (scope.minDate || scope.maxDate) {
                             var _dateTime = ADMdtpFactory.joinTime(scope.dtpValue.unix, _timeCopy);
                             if ((scope.minDate && !ADMdtpFactory.isDateBigger(_dateTime,scope.minDate)) || (scope.maxDate && !ADMdtpFactory.isDateBigger(scope.maxDate,_dateTime)))
@@ -905,7 +915,7 @@
                     scope.time[variable] = _num.lZero();
                     
                     
-                    if (scope.dtpValue)
+                    if (scope.dtpValue.unix)
                         admDtp.updateMasterValue(false, 'time');
                     
                     admDtp.reload();
@@ -913,12 +923,9 @@
 
                 scope.modelChanged = function(input) {
                     
-                    if (!scope.dtpValue)
-                        return;
-                    
                     var _value = input || scope.dtpValue.formated;
                     
-                    if (!_value) {
+                    if (!_value && scope.dtpValue.unix) {
                         scope.destroy();
                         return;
                     }
@@ -959,7 +966,7 @@
                         _mainDate = new Date(_mainDate.year, _mainDate.month-1, _mainDate.day);
                     }
                     
-                    if (scope.dtpValue) {
+                    if (scope.dtpValue.unix) {
                         admDtp.updateMasterValue(ADMdtpFactory.convertFromUnix(scope.dtpValue.unix, scope.calType));
                     }
                     
@@ -970,7 +977,7 @@
                 
             },
             //templateUrl: 'js/ADM-dateTimePicker/ADM-dateTimePicker_calendar.html'
-            template: '<div class="ADMdtp-calendar-container" ng-class="{square: monthPickerStat||timePickerStat}"><div class="monthPickerContainer" ng-class="{active: monthPickerStat}"><i class="calendarIcon" ng-class="{show: monthPickerStat}" ng-click="monthPickerStat = false"><svg viewBox="0 0 1664 1664"><use xlink:href="#dtpCalendar" /></svg></i><div class="content">            <div class="monthContainer" ng-class="{onYear: yearSelectStat, rtl: (calType==\'jalali\')}"><div class="yearContainer"><span ng-if="yearSelectStat" class="dtpIcon arrow left" ng-click="previousYear()"></span><p ng-click="selectYearInit()">{{current.year | digitType:calType}}</p><span ng-if="yearSelectStat" class="dtpIcon arrow right" ng-click="nextYear()"></span></div><span ng-repeat="yearName in generatedYears" ng-if="yearSelectStat"><span ng-class="{selected: yearName==current.year}" ng-click="selectYear(yearName)">{{yearName | digitType:calType}}</span></span><span ng-repeat="monthName in monthNames" ng-if="!yearSelectStat"><span ng-class="{selected: monthName==current.monthDscr}" ng-click="selectMonth($index)">{{monthName}}</span></span></div></div></div><div class="timePickerContainer" ng-class="{active: timePickerStat}"><i class="calendarIcon" ng-class="{show: timePickerStat}" ng-click="timePickerStat = false"><svg viewBox="0 0 1664 1664"><use xlink:href="#dtpCalendar" /></svg></i><div class="content"><div class="timePicker"><span class="dtpIcon null up" ng-click="changeTimeValue(\'hour\', 1)"><svg viewBox="0 0 1792 1792"><use xlink:href="#dtpDown" /></svg></span><!----><span></span><!----><span class="dtpIcon null up" ng-click="changeTimeValue(\'minute\', 1)"><svg viewBox="0 0 1792 1792"><use xlink:href="#dtpDown" /></svg></span><!----><span>{{time.hour}}</span><!----><span class="period">:</span><!----><span>{{time.minute}}</span><!----><span class="dtpIcon null down" ng-click="changeTimeValue(\'hour\', -1)"><svg viewBox="0 0 1792 1792"><use xlink:href="#dtpUp" /></svg></span><!----><span></span><!----><span class="dtpIcon null down" ng-click="changeTimeValue(\'minute\', -1)"><svg viewBox="0 0 1792 1792"><use xlink:href="#dtpUp" /></svg></span></div></div></div><header><span class="dtpIcon arrow left" ng-click="previousMonth()"></span><span class="yearMonth" ng-click="selectMonthInit()">{{current.monthDscr}} {{current.year | digitType:calType}}</span><span class="dtpIcon arrow right" ng-click="nextMonth()"></span></header><div class="daysNames"><span ng-repeat="dayName in daysNames">{{dayName}}</span></div><hr><div class="days" ng-class="{loading:loadingDays}"><span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType==\'jalali\')?\'max\':\'min\'):\'\', (day.isMax)?((calType==\'jalali\')?\'min\':\'max\'):\'\']">{{day.day | digitType:calType}}</span></span></div><hr><footer><div class="calTypeContainer" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple"><p class="gregorian">Gregorian</p><p class="jalali">جلالی</p></div><button class="today" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button><svg class="timeSelectIcon" viewBox="0 0 1492 1592" ng-click="timePickerStat = !timePickerStat"><use xlink:href="#dtpClock" /></svg></footer></div>'
+            template: '<div class="ADMdtp-calendar-container" ng-class="{square: monthPickerStat||timePickerStat}"><div class="monthPickerContainer" ng-class="{active: monthPickerStat}"><i class="calendarIcon" ng-class="{show: monthPickerStat}" ng-click="monthPickerStat = false"><svg viewBox="0 0 1664 1664"><use xlink:href="#dtpCalendar" /></svg></i><div class="content">            <div class="monthContainer" ng-class="{onYear: yearSelectStat, rtl: (calType==\'jalali\')}"><div class="yearContainer"><span ng-if="yearSelectStat" class="dtpIcon arrow left" ng-click="previousYear()"></span><p ng-click="selectYearInit()">{{current.year | digitType:calType}}</p><span ng-if="yearSelectStat" class="dtpIcon arrow right" ng-click="nextYear()"></span></div><span ng-repeat="yearName in generatedYears" ng-if="yearSelectStat"><span ng-class="{selected: yearName==current.year}" ng-click="selectYear(yearName)">{{yearName | digitType:calType}}</span></span><span ng-repeat="monthName in monthNames" ng-if="!yearSelectStat"><span ng-class="{selected: monthName==current.monthDscr}" ng-click="selectMonth($index)">{{monthName}}</span></span></div></div></div><div class="timePickerContainer" ng-class="{active: timePickerStat}"><i class="calendarIcon" ng-class="{show: timePickerStat}" ng-click="timePickerStat = false"><svg viewBox="0 0 1664 1664"><use xlink:href="#dtpCalendar" /></svg></i><div class="content"><div class="timePicker"><span class="dtpIcon null up" ng-click="changeTimeValue(\'hour\', 1)"><svg viewBox="0 0 1792 1792"><use xlink:href="#dtpDown" /></svg></span><!----><span></span><!----><span class="dtpIcon null up" ng-click="changeTimeValue(\'minute\', 1)"><svg viewBox="0 0 1792 1792"><use xlink:href="#dtpDown" /></svg></span><!----><span>{{time.hour}}</span><!----><span class="period">:</span><!----><span>{{time.minute}}</span><!----><span class="dtpIcon null down" ng-click="changeTimeValue(\'hour\', -1)"><svg viewBox="0 0 1792 1792"><use xlink:href="#dtpUp" /></svg></span><!----><span></span><!----><span class="dtpIcon null down" ng-click="changeTimeValue(\'minute\', -1)"><svg viewBox="0 0 1792 1792"><use xlink:href="#dtpUp" /></svg></span></div></div></div><header><span class="dtpIcon arrow left" ng-click="previousMonth()"></span><span class="yearMonth" ng-click="selectMonthInit()">{{current.monthDscr}} {{current.year | digitType:calType}}</span><span class="dtpIcon arrow right" ng-click="nextMonth()"></span></header><div class="daysNames"><span ng-repeat="dayName in daysNames">{{dayName}}</span></div><hr><div class="days" ng-class="{loading:loadingDays}"><span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType==\'jalali\')?\'max\':\'min\'):\'\', (day.isMax)?((calType==\'jalali\')?\'min\':\'max\'):\'\']">{{day.day | digitType:calType}}</span></span></div><hr><footer><div class="calTypeContainer" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple"><p class="gregorian">Gregorian</p><p class="jalali">جلالی</p></div><button type="button" class="today" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button><svg class="timeSelectIcon" viewBox="0 0 1492 1592" ng-click="timePickerStat = !timePickerStat"><use xlink:href="#dtpClock" /></svg></footer></div>'
         }
     }
 
@@ -1005,6 +1012,7 @@
                 scope.monthNames = constants.calendars[scope.calType].monthsNames;
                 scope.daysNames = constants.calendars[scope.calType].daysNames;
                 scope.timeoutValue = [0,0];
+                scope.dtpValue = {};
 
                 scope.minDate = scope.mindate?new Date(scope.mindate):null;
                 scope.maxDate = scope.maxdate?new Date(scope.maxdate):null;
@@ -1019,7 +1027,8 @@
 
                 scope.updateMasterValue = function(newDate, releaseTheBeast) {
                     if (!newDate)
-                        newDate = scope.dtpValue;
+                        newDate = (scope.dtpValue.unix ? scope.dtpValue : {});
+                        
 
                     scope.$applyAsync(function() {
                         scope.dtpValue = newDate;
@@ -1027,6 +1036,7 @@
                         scope.dtpValue.fullDate = ADMdtpFactory.joinTime(newDate.unix, scope.time);
                         scope.fullData = {
                             formated: scope.dtpValue.formated,
+                            lDate: scope.dtpValue.fullDate.dtp_shortDate(),
                             gDate: scope.dtpValue.fullDate,
                             unix: scope.dtpValue.fullDate.getTime(),
                             year: newDate.year,
@@ -1222,7 +1232,7 @@
                         scope.openCalendar();
                 }
 
-                scope.destroy = function() {
+                scope.destroy = function(noRefresh) {
                     if (scope.disable)
                         return;
                     
@@ -1235,7 +1245,7 @@
                         monthDscr: '',
                         days: []
                     };
-                    scope.dtpValue = false;
+                    scope.dtpValue = {};
                     scope.fullData = {
                         minDate: scope.minDate,
                         maxDate: scope.maxDate
@@ -1252,7 +1262,8 @@
                     ngModel.$setViewValue('');
                     ngModel.$render();
                     
-                    scope.fillDays(_standValue, !scope.option.transition);
+                    if (!noRefresh)
+                        scope.fillDays(_standValue, !scope.option.transition);
                     
                     if (scope.onChange)
                         scope.onChange({date:scope.fullData});
@@ -1316,10 +1327,7 @@
                             var _today = new Date();
                             _today = new Date(_today.getFullYear(), _today.getMonth(), _today.getDate()).getTime();
 
-                            var _selected = -1, _selectedIdx;
-                            if ($scope.dtpValue) {
-                                _selected = $scope.dtpValue.unix;
-                            }
+                            var _selected = ($scope.dtpValue.unix || -1), _selectedIdx;
 
                             var _currDay = new Date(_input.year, _input.month-1, _input.day);
                             var _firstDayName = new Date(angular.copy(_currDay).setDate(1)).getDay();
@@ -1471,12 +1479,7 @@
     }
     
     var ADMdtpConfig = function(ADMdtp) {
-        try {  
-            document.createEvent("TouchEvent");  
-            ADMdtp.setOptions({isDeviceTouch: true});
-        } catch (e) {  
-            ADMdtp.setOptions({isDeviceTouch: false});
-        } 
+        ADMdtp.setOptions({isDeviceTouch: ('ontouchstart' in window || navigator.maxTouchPoints)});
     }
 
     return angular.module('ADM-dateTimePicker', [])
