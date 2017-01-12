@@ -1,7 +1,7 @@
 # ADM-dateTimePicker  
-![Version](https://img.shields.io/badge/npm-v1.1.4-brightgreen.svg)
+![Version](https://img.shields.io/badge/npm-v1.1.5-brightgreen.svg)
 &nbsp;
-![Version](https://img.shields.io/badge/bower-v1.1.4-brightgreen.svg)
+![Version](https://img.shields.io/badge/bower-v1.1.5-brightgreen.svg)
 &nbsp;
 ![AngularJs](https://img.shields.io/badge/Pure-AngularJs-red.svg)
 &nbsp;
@@ -10,6 +10,11 @@
 *Pure AngularJs Gregorian and Jalali smart dateTimePicker by [ADM | Amirkabir Data Miners](https://adm-co.net)*
 
 ![ADM-dateTimePicker cover](http://amirkabirdataminers.github.io/ADM-dateTimePicker/images/cover.jpg)
+
+### Updates in V1.1.5
+* Fix bug for converting Gregorian dates after 2017/1/1
+* Prevent today button from posting form
+* Fix datePicker input stucking by pasting date
 
 ### Updates in V1.1.0
 * Remove all other dependencies. (Bootstrap, Glyphicon, Fonts)
