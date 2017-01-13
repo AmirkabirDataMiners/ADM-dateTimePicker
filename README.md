@@ -1,7 +1,7 @@
 # ADM-dateTimePicker  
-![Version](https://img.shields.io/badge/npm-v1.1.6-brightgreen.svg)
+![Version](https://img.shields.io/badge/npm-v1.1.7-brightgreen.svg)
 &nbsp;
-![Version](https://img.shields.io/badge/bower-v1.1.6-brightgreen.svg)
+![Version](https://img.shields.io/badge/bower-v1.1.7-brightgreen.svg)
 &nbsp;
 ![AngularJs](https://img.shields.io/badge/Pure-AngularJs-red.svg)
 &nbsp;
