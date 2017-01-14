@@ -24,7 +24,7 @@
   ],
   "license": "MIT",
   "ignore": [
-      "*.log"
+      "*.log",
       "*.DS_Store",
       ".git",
       ".gitignore",
