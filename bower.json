@@ -1,6 +1,6 @@
 {
   "name": "adm-dtp",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "homepage": "https://github.com/AmirkabirDataMiners/ADM-dateTimePicker",
   "authors": [
     "ADM | Amirkabir Data Miners <info@adm-co.net>"
@@ -24,7 +24,7 @@
   ],
   "license": "MIT",
   "ignore": [
-      "*.log"
+      "*.log",
       "*.DS_Store",
       ".git",
       ".gitignore",
