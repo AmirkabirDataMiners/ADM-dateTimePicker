@@ -85,7 +85,6 @@
         <script src="js/highlight.min.js"></script>
         <script src="js/angular.min.js"></script>
         <script src="js/angular-highlightjs.min.js"></script>
-        <script src="js/angular-route.min.js"></script>
         <script src="js/controllers/controllers.js"></script>                
         <script src="js/controllers/homeControllers.js"></script>
 <!--        <script src="js/controllers/betaControllers.js"></script>-->
@@ -98,7 +97,421 @@
 
     <body>
         <div class="mainView_container">       
-            <div class="mainView" ng-view></div>
+            <div class="mainView" ng-controller="homeControllers">
+            
+            <div class="row">
+    <h1>
+        <strong>Pure <span class="red">AngularJs</span> <br> <span class="orange">Gregorian</span> and <span class="orange">Jalali</span> <br> smart dateTimePicker</strong>
+        <br>
+<!--        <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&type=follow&count=true" frameborder="0" scrolling="0" width="230px" height="20px"></iframe>-->
+        <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&repo=ADM-dateTimePicker&type=watch&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+        <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&repo=ADM-dateTimePicker&type=fork&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+        <img src="https://img.shields.io/badge/npm-v1.1.9-brightgreen.svg" alt="">
+        <img src="https://img.shields.io/badge/bower-v1.1.9-brightgreen.svg" alt="">
+        <img src="https://img.shields.io/badge/Pure-AngularJs-red.svg" alt="">
+        <img src="http://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat" alt="">
+
+    </h1>
+    <hr>
+    <br>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid newFeatures">
+            <div class="navbar-header">
+                <img class="version" src="https://img.shields.io/badge/Updates-v1.1.9-85DEF9.svg" alt="">
+                <br>
+                <ul>
+                    <li>Rediuce stylesheet size by 70%</li>
+                    <li>Fix unused font dependency</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid newFeatures">
+            <div class="navbar-header">
+                <img class="version" src="https://img.shields.io/badge/Updates-v1.1.6-85DEF9.svg" alt="">
+                <br>
+                <ul>
+                    <li>Fix bug for converting Gregorian dates after 2017/1/1</li>
+                    <li>Prevent today button from posting form</li>
+                    <li>Fix datePicker input stucking by pasting date</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid newFeatures">
+            <div class="navbar-header">
+                <img class="version" src="https://img.shields.io/badge/Updates-v1.1.0-85DEF9.svg" alt="">
+                <br>
+                <ul>
+                    <li>Remove all other dependencies. (Bootstrap, Glyphicon, Fonts)</li>
+                    <li>Add month and year quick select.</li>
+                    <li>Date format is now fully customize with any combination of YYYY, YY, MM, DD, hh, mm.</li>
+                    <li>Add custom input template option inside directive.</li>
+                    <li>Add option to freeze input to prevent user from changing text.</li>
+                    <li>Add option to hide time from dateTimePicker.</li>
+                    <li>Add option to auto select current day, by puting 'today' in default parameter.</li>
+                    <li>Fix bugs on IE9.</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br>
+    <h2><strong>Implementation steps</strong></h2>
+    <hr>
+    <h3>Step 1: Install ADM-dateTimePicker</h3>
+<div hljs no-escape class="customCode">
+npm install adm-dtp
+bower install adm-dtp
+</div>
+    <h3>Step 2: Include the files in your app</h3>
+    
+<div hljs no-escape class="customCode">
+&lt;!doctype html&gt;
+&lt;html ng-app="myApp"&gt;
+    &lt;head&gt;
+        &lt;link rel="stylesheet" href="css/ADM-dateTimePicker.css" /&gt;
+        &lt;script src="js/angular.min.js"&gt;&lt;/script&gt;
+        &lt;script src="js/ADM-dateTimePicker.min.js"&gt;&lt;/script&gt;
+        ...
+    &lt;/head&gt;
+    &lt;body&gt;
+        ...
+    &lt;/body&gt;
+&lt;/html&gt;
+</div>    
+    
+    <h3>Step 3: Inject the ADM-dateTimePicker module</h3>
+
+<div hljs class="customCode">
+var app = angular.module('myApp', ['ADM-dateTimePicker']);
+</div>
+
+    <h3>Step 4: Add the adm-dtp directive to a DOM element</h3>
+    
+<div hljs no-escape class="customCode">
+&lt;adm-dtp ng-model='date'&gt;&lt;/adm-dtp&gt;
+</div>
+    <br>
+    <h2><strong>Options</strong></h2>
+    <hr>
+    <h3>Set options for entire of app</h3>
+    
+<div hljs class="customCode">
+app.config(['ADMdtpProvider', function(ADMdtp) {
+    ADMdtp.setOptions({
+        calType: 'gregorian',
+        format: 'YYYY/MM/DD hh:mm',
+        default: 'today',
+        ...
+    });
+}]);
+</div>
+   
+    <h3>Set options for each directive</h3>
+<div hljs no-escape class="customCode">
+&lt;!-- pass options from controller --&gt;
+&lt;adm-dtp ng-model='date1' options='date1_options'&gt;&lt;/adm-dtp&gt;
+&lt;!-- or write them inline --&gt;
+&lt;adm-dtp ng-model='date2' options='{calType: "jalali", format: "YYYY/MM/DD", default: 1450197600000}'&gt;&lt;/adm-dtp&gt;
+</div>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            Gregorian - Date: YY-MM-DD  Time: (hh:mm)
+            <adm-dtp ng-model="date1" options='{format: "Date: YY-MM-DD  Time: (hh:mm)", default: "today"}'></adm-dtp>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            Jalali - YYYY/MM/DD
+            <adm-dtp ng-model="date2" options='{calType: "jalali", format: "YYYY/MM/DD", default: "today"}'></adm-dtp>
+        </div>
+    </div>
+    <br>
+    <h3>Quick look</h3>
+    
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in availableOptions">
+                    <td>{{item.name}}</td>
+                    <td>{{item.type}}</td>
+                    <td>{{item.default}}</td>
+                    <td ng-bind-html="item.description"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <br>
+    <h2><strong>Custom input template</strong></h2>
+    <hr>
+    You can put custom input template inside <pre class="inline">&lt;adm-dtp&gt;&lt;/adm-dtp&gt;</pre> but with unwanted limits.<br>
+    <br>
+<div hljs no-escape class="customCode">
+&lt;!-- all optional actions --&gt;
+&lt;adm-dtp ng-model='date' full-data='date_details'&gt;
+    &lt;!-- fully access to 'date' and 'date_details' parameters --&gt;
+    
+    &lt;!-- input is optional too, but must use in this format --&gt;
+    &lt;input type='text' ng-model='date' dtp-input /&gt;
+    
+    &lt;!-- attributes name are important, not tags name --&gt;
+    &lt;button dtp-open &gt; Open calendar &lt;/button&gt;
+    &lt;button dtp-close &gt; Close calendar &lt;/button&gt;
+    &lt;button dtp-toggle &gt; Toggle calendar &lt;/button&gt;
+    &lt;button dtp-destroy &gt; Destroy calendar &lt;/button&gt;
+&lt;/adm-dtp&gt;
+</div>   
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12">
+            <adm-dtp ng-model="date16" options='{format: "Date: YYYY-MM-DD  Time: (hh:mm)", default: "today"}'>
+               <button class="btn btn-success" dtp-toggle style="display: block;">{{date16}}</button>
+            </adm-dtp>
+        </div>
+    </div>
+    
+    <br>
+    <h2><strong>Disabling days</strong></h2>
+    <hr>
+    <h3>Disable specific days</h3>
+    
+<div hljs class="customCode">
+<!-- it accept both unix and string date -->
+<adm-dtp ng-model='date' options="disabled:['2016/1/20', 1453408200000]"></adm-dtp>
+</div>  
+   
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12">
+            <adm-dtp ng-model='date10' options="{default:'2016/1/1', disabled:['2016/1/20', 1453408200000]}" ></adm-dtp>
+        </div>
+    </div>
+    <br>
+    <h3>Disable with pattern</h3>
+    <h4>Currently two types of patterns are availble:</h4>
+    <ul>
+        <li>
+            <strong>Days in a week: </strong><pre class="inline">i+[NUM]</pre>
+            <ul>
+                <li><pre class="inline"><strong>i</strong></pre> -> will disable all Sundays in Gregorain calendar or Saturdays in Jalali calendars</li>
+                <li><pre class="inline"><strong>i+6</strong></pre> -> will disable all Saturdays in Gregorain calendar or Fridays in Jalali calendars</li>
+                <li>...</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Days in a month: </strong><pre class="inline">[NUM]d+[NUM]</pre>
+            <ul>
+                <li><pre class="inline"><strong>d+1</strong></pre> -> will disable the second day of all months</li>
+                <li><pre class="inline"><strong>2d</strong></pre> -> will disable the even days of all months</li>
+                <li><pre class="inline"><strong>2d+1</strong></pre> -> will disable the odd days of all months</li>
+                <li>...</li>
+            </ul>
+        </li>
+    </ul>
+    <br>
+    <h4><strong>Inverse disabling:</strong></h4>
+    putting <strong>Exclamation mark (!)</strong> at the begining of the pattern will inverse disabling pattern:
+    <ul>
+        <li><pre class="inline"><strong>!i+6</strong></pre> -> just Saturdays in Gregorain calendar or Fridays in Jalali calendars are available</li>
+        <li><pre class="inline"><strong>!2d+1</strong></pre> -> it's exactly like <pre class="inline">2d</pre></li>
+    </ul>
+    <br>
+    <h4><strong>Combine patterns:</strong></h4>
+    patterns of the same type can be combine with <strong>Ampersand (&)</strong>. <br>
+    mention that <pre class="inline">['2d+1', '7d']</pre> and <pre class="inline">['2d+1&7d']</pre> are equal, but <pre class="inline">['!2d+1', '!7d']</pre> and <pre class="inline">['!2d+1&7d']</pre> are completely differents.
+    <br>
+    <br>
+    <h4><strong>Smart disabling:</strong></h4>
+    <pre class="inline">i</pre> in Gregorian calendar will disable Sundays (weekend) that is equal to Fridays (weekend) in Jalali calendar. <br>
+    option <pre class="inline">smartDisabling: true</pre> change Sunday from Gregorian calendar to Friday in Jalali calendar by switching calendar type,<br>
+    but <pre class="inline">smartDisabling: false</pre> makes no different.
+    <br><br>
+<div hljs no-escape class="customCode">
+&lt;adm-dtp ng-model='date' options="disabled:['2016/1/20', '!i&amp;i+1', '15d+2']"&gt;&lt;/adm-dtp&gt;
+</div> 
+       
+   <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            disable weekends - <pre class="inline">i&i+6</pre>
+            <adm-dtp ng-model="date14" options='{default: "2016/1/20", disabled: ["i&i+6"]}'></adm-dtp>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            only weekends - <pre class="inline">!i&i+6</pre>
+            <adm-dtp ng-model="date15" options='{default: "2016/1/20", disabled: ["!i&i+6"]}'></adm-dtp>
+        </div>
+    </div>
+    <br>
+    <h2><strong>Full data</strong></h2>
+    <hr>
+    <h5>Beside ngModel you can access to date full details throw <pre class="inline"><strong>full-data</strong></pre> attribute.</h5>
+    
+<div hljs class="customCode">
+<adm-dtp ng-model='date' full-data='date_details'></adm-dtp>
+</div>   
+    
+<h5><pre class="inline"><strong>date_details</strong></pre> contains following parameters:</h5>
+
+<div hljs hljs-language="javascript" class="customCode">
+{
+    formated: "2015/12/15",
+    gDate: 2015-12-15T16:40:00.000Z,
+    //gDate is Date format of selected date in Gregorian calendar
+    unix: 1450197600000,
+    year: 2015,
+    month: 12,
+    day: 15,
+    hour: 20,
+    minute: 10,
+    minDate: null,
+    maxDate: null,
+    calType: "gregorian",
+    format: "YYYY/MM/DD"
+}
+</div> 
+    
+    <br>
+    <h2><strong>Smart range picker</strong></h2>
+    <hr>
+    <h3>Static limitation</h3>
+    
+<div hljs class="customCode">
+<!-- mindate & maxdate accept both unix and string date -->
+<adm-dtp ng-model='date' options="{default:'2015/12/15'}" mindate="1449866902553" maxdate="'2015/12/18'"></adm-dtp>
+</div> 
+   
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12">
+            <adm-dtp ng-model='date3' options="{default:'2015/12/15'}" mindate="1449866902553" maxdate="'2015/12/17'"></adm-dtp>
+        </div>
+    </div>
+    
+    <h3>Dynamic limitation</h3>
+    <h4>No need to destroy datepickers anymore!</h4>
+    
+<div hljs class="customCode">
+<adm-dtp ng-model='date11' full-data="date11_detail" maxdate="{{date12_detail.unix}}"></adm-dtp>
+<adm-dtp ng-model='date12' full-data="date12_detail" mindate="{{date11_detail.unix}}"></adm-dtp>
+<adm-dtp ng-model='date13' mindate="{{date11_detail.unix}}" maxdate="{{date12_detail.unix}}"></adm-dtp>
+</div> 
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+           From:
+            <adm-dtp ng-model="date4" full-data="date4_full"  maxdate="{{date5_full.unix}}"></adm-dtp>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+           To:
+            <adm-dtp ng-model="date5" full-data="date5_full" mindate="{{date4_full.unix}}"></adm-dtp>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+           From - To:
+            <adm-dtp ng-model="date6" full-data="date6_full" mindate="{{date4_full.unix}}" maxdate="{{date5_full.unix}}"></adm-dtp>
+        </div>
+    </div>
+    
+    <br>
+    <h2><strong>Disabling ADMdtp</strong></h2>
+    <hr>
+<div hljs no-escape class="customCode">
+&lt;!-- disable permanently --&gt;
+&lt;adm-dtp ng-model='date' disable='true'&gt;&lt;/adm-dtp&gt;
+
+&lt;!-- disable dynamicly --&gt;
+&lt;adm-dtp ng-model='date1' &gt;&lt;/adm-dtp&gt;
+&lt;adm-dtp ng-model='date2' disable='{{!date1}}'&gt;&lt;/adm-dtp&gt;
+</div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            Select date to enable next input
+            <adm-dtp ng-model="date7"></adm-dtp>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            I'm <strong>{{(date7)?'enable':'disable'}}</strong>
+            <adm-dtp ng-model="date8" disable="{{!date7}}"></adm-dtp>
+        </div>
+    </div>
+    
+    <br>
+    <h2><strong>Events</strong></h2>
+    <hr>
+    <h3>Show / Hide</h3>
+    
+<div hljs class="customCode">
+<adm-dtp ng-model='date' on-open="open()"></adm-dtp>
+<adm-dtp ng-model='date' on-close="close()" ></adm-dtp>
+</div> 
+
+    <h3>Change / Select</h3>
+    
+<div hljs class="customCode">
+<!-- Note 1: you can access to the selected date full details in below functions -->
+<!-- Note 2: functions names are optional but input name must be 'date' -->
+
+<!-- event on any change occurs on input -->
+<adm-dtp ng-model='date' on-change="change(date)"></adm-dtp>
+<!-- event on selecting a day -->
+<adm-dtp ng-model='date' on-datechange="dateChanged(date)" ></adm-dtp>
+<!-- event on changing the time -->
+<adm-dtp ng-model='date' on-datechange="timeChanged(date)" ></adm-dtp>
+</div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Example:</h3>
+        </div>
+        <div class="col-xs-12">
+            <adm-dtp ng-model="date9" on-open="testOpen()" on-close="testClose()" on-change="testChange(date)" on-timechange="testTimeChange(date)" on-datechange="testDateChange(date)"></adm-dtp>
+            <br>
+            <blockquote>
+                <p><strong>Messages:</strong></p>
+                <small class="noDash"><p ng-repeat="item in date3Message">{{item}}</p></small>
+            </blockquote>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <a class="footerLogo" href="https://adm-co.net">
+        <img src="images/admLogo.svg" alt="Amirkabir Data Miners Logo">
+        Amirkabir Data Miners
+    </a>
+</footer>
+            
+            </div>
         </div>
     </body>
     
