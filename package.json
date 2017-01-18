@@ -1,23 +1,20 @@
 {
-  "name": "adm-dtp",
-  "version": "1.1.9",
-  "description": "Pure AngularJs Gregorian and Jalali smart dateTimePicker",
-  "main": "ADM-dateTimePicker.js",
+  "name": "adm-trv",
+  "version": "1.1.10",
+  "description": "Pure AngularJs TreeView",
+  "main": "server.js",
   "scripts": {
     "test": "karma"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AmirkabirDataMiners/ADM-dateTimePicker.git"
+    "url": "https://github.com/AmirkabirDataMiners/ADM-treeView.git"
   },
   "keywords": [
-    "ADMdtp",
+    "ADM-treeView",
     "angular",
     "pure",
-    "gregorian",
-    "jalali",
-    "persian",
-    "datepicker",
+    "treeview",
     "sass",
     "amirkabirdataminers",
     "adm"
@@ -25,7 +22,11 @@
   "author": "ADM | Amirkabir Data Miners <info@adm-co.net>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AmirkabirDataMiners/ADM-dateTimePicker/issues"
+    "url": "https://github.com/AmirkabirDataMiners/ADM-treeView/issues"
   },
-  "homepage": "https://github.com/AmirkabirDataMiners/ADM-dateTimePicker"
+  "homepage": "https://github.com/AmirkabirDataMiners/ADM-treeView",
+  "dependencies": {
+    "browser-sync": "^2.18.5",
+    "uglify-js": "^2.7.5"
+  }
 }
