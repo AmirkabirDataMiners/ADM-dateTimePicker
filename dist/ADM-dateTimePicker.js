@@ -3,7 +3,7 @@
  * 
  * Demo: http://amirkabirdataminers.github.io/ADM-dateTimePicker
  *
- * @version 1.1.10
+ * @version 1.1.11
  *
  * © 2017 Amirkabir Data Miners <info@adm-co.net> - www.adm-co.net
  */
