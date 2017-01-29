@@ -6,7 +6,10 @@
     "ADM | Amirkabir Data Miners <info@adm-co.net>"
   ],
   "description": "Pure AngularJs Gregorian and Jalali smart dateTimePicker",
-  "main": "ADM-dateTimePicker.js",
+  "main": [
+    "./dist/ADM-dateTimePicker.js",
+    "./dist/ADM-dateTimePicker.css"
+  ],
   "moduleType": [
     "globals"
   ],
@@ -22,6 +25,9 @@
     "amirkabirdataminers",
     "adm"
   ],
+  "dependencies": {
+    "angular": "1.6.1"
+  },
   "license": "MIT",
   "ignore": [
     "*.log",
