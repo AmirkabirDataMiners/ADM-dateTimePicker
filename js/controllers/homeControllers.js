@@ -18,6 +18,8 @@ appControllers.controller('homeControllers', function($scope, $sce, $http, $cont
         {name:'minuteStep', type:'Number', default:'1', description:'Each step for increasing or decreasing minutes'},
         {name:'gregorianDic', type:'Object', default:'__ see on examples __', description:'Changing title, monthsNames, daysNames and todayBtn for Gregorian Calendar'},
         {name:'jalaliDic', type:'Object', default:'__ see on examples __', description:'Changing title, monthsNames, daysNames and todayBtn for Jalali Calendar'},
+        {name:'zIndex', type:'Number', default:'9', description:'z-index of datePicker popup'},
+        
     ];
     
     $scope.availableOptions.forEach(function(item) {
