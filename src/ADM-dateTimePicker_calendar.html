@@ -1,0 +1,72 @@
+<div class="ADMdtp-box ADMdtp-calendar-container"  ng-class="{rtl: (calType=='jalali'), square: monthPickerStat||timePickerStat}">
+    <div class="dtpNewBox" ng-class="{active: monthPickerStat}">
+        <i class="calendarIcon" ng-class="{show: monthPickerStat}" ng-click="monthPickerStat = false">
+            <svg class="dtp-i" viewBox="0 0 24 24">
+                <use xlink:href="#dtp-i-calendar" />
+            </svg>
+        </i>
+        <div class="content">            
+            <div class="ADMdtpMonths" ng-class="{onYear: yearSelectStat, rtl: (calType=='jalali')}">
+                <div class="ADMdtpYears">
+                    <svg class="dtp-i dtp-i-180 dtp-trs-3 arrow left" viewBox="0 0 24 24" ng-if="yearSelectStat" ng-click="previousYear()">
+                        <use xlink:href="#dtp-i-right" />
+                    </svg>
+                    <p class="dtp-trs-3" ng-click="selectYearInit()">{{current.year | digitType:calType}}</p>
+                    <svg class="dtp-i dtp-trs-3 arrow right" viewBox="0 0 24 24" ng-if="yearSelectStat" ng-click="nextYear()">
+                        <use xlink:href="#dtp-i-right" />
+                    </svg>
+                </div>
+                <span ng-repeat="yearName in generatedYears" ng-if="yearSelectStat"><span class="dtp-trs-5" ng-class="{selected: yearName==current.year}" ng-click="selectYear(yearName)">{{yearName | digitType:calType}}</span></span>
+                <span ng-repeat="monthName in monthNames" ng-if="!yearSelectStat"><span class="dtp-trs-5" ng-class="{selected: monthName==current.monthDscr}" ng-click="selectMonth($index)">{{monthName}}</span></span>
+            </div>
+        </div>
+    </div>
+    <div class="dtpNewBox" ng-class="{active: timePickerStat}">
+        <i class="calendarIcon" ng-class="{show: timePickerStat}" ng-click="timePickerStat = false">
+            <svg class="dtp-i" viewBox="0 0 24 24">
+                <use xlink:href="#dtp-i-calendar" />
+            </svg>
+        </i>
+        <div class="content">
+            <div class="ADMdtpTime">
+                <span class="dtpIcon null up" ng-click="changeTimeValue('hour', 1)"><svg  class="dtp-i dtp-trs-5 dtp-i-270" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span><!--
+                --><span></span><!--
+                --><span class="dtpIcon null up" ng-click="changeTimeValue('minute', 1)"><svg  class="dtp-i dtp-trs-5 dtp-i-270" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span><!--
+                --><span>{{time.hour}}</span><!--
+                --><span class="period">:</span><!--
+                --><span>{{time.minute}}</span><!--
+                --><span class="dtpIcon null down" ng-click="changeTimeValue('hour', -1)"><svg  class="dtp-i dtp-trs-5 dtp-i-90" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span><!--
+                --><span></span><!--
+                --><span class="dtpIcon null down" ng-click="changeTimeValue('minute', -1)"><svg  class="dtp-i dtp-trs-5 dtp-i-90" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span>
+            </div>
+        </div>
+    </div>
+    <header>
+        <svg class="dtp-i dtp-i-180 dtp-trs-3 arrow left" viewBox="0 0 24 24" ng-click="previousMonth()">
+            <use xlink:href="#dtp-i-right" />
+        </svg>
+        <span class="yearMonth" ng-click="selectMonthInit()">{{current.monthDscr}} {{current.year | digitType:calType}}</span>
+        <svg class="dtp-i dtp-trs-3 arrow right" viewBox="0 0 24 24" ng-click="nextMonth()">
+            <use xlink:href="#dtp-i-right" />
+        </svg>
+    </header>
+    <div class="daysNames">
+        <span ng-repeat="dayName in daysNames">{{dayName}}</span>
+    </div>
+    <hr>
+    <div class="ADMdtpDays" ng-class="{loading:loadingDays}">
+        <span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType=='jalali')?'max':'min'):'', (day.isMax)?((calType=='jalali')?'min':'max'):'']">{{day.day | digitType:calType}}</span></span>
+    </div>
+    <hr>
+    <footer>
+        <div class="calTypeContainer dtp-trs-3" ng-class="$parent.calType" ng-click="calTypeChanged()"  ng-if="option.multiple">
+            <p class="gregorian">{{option.gregorianDic.title}}</p>
+            <p class="jalali">{{option.jalaliDic.title}}</p>
+        </div>
+        <button type="button" class="today dtp-trs-3" ng-click="today()">{{option[calType + "Dic"].todayBtn}}</button>
+        <svg class="dtp-i dtp-trs-5 timeSelectIcon" viewBox="0 0 24 24" ng-show="option.dtpType != 'date'" ng-click="timePickerStat = !timePickerStat">
+            <use xlink:href="#dtp-i-clock" />
+        </svg>
+    </footer>
+    
+</div>

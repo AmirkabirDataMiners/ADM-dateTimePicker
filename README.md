@@ -1,7 +1,7 @@
 # ADM-dateTimePicker  
-![Version](https://img.shields.io/badge/npm-v1.1.11-brightgreen.svg)
+![Version](https://img.shields.io/badge/npm-v1.2.0-brightgreen.svg)
 &nbsp;
-![Version](https://img.shields.io/badge/bower-v1.1.11-brightgreen.svg)
+![Version](https://img.shields.io/badge/bower-v1.2.0-brightgreen.svg)
 &nbsp;
 ![AngularJs](https://img.shields.io/badge/Pure-AngularJs-red.svg)
 &nbsp;
@@ -10,6 +10,17 @@
 *Pure AngularJs Gregorian and Jalali smart dateTimePicker by [ADM | Amirkabir Data Miners](https://adm-co.net)*
 
 ![ADM-dateTimePicker cover](http://amirkabirdataminers.github.io/ADM-dateTimePicker/images/cover.jpg)
+
+### Updates in V1.2.0
+* Now popup is appending to body instead of main element to fix some overflow & z-index issues
+* Add translate option. so days & months names are no more constants
+* Add option to watch options for changes
+* Add option to set start day of week. (setting Monday instead of Sunday for some calendars in Europe)
+* Add option to set minutes step
+* Now popup will close by hitting tab
+* Add ng-required support
+* Fix the bug that causes high cpu usage on Safari
+* Fix removeIcon bug
 
 ### Updates in V1.1.9
 * Rediuce stylesheet size by 70%
@@ -90,6 +101,7 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
 #### Quick look
 Name  |	Type  |	Default |	Description
 ------------- | ------------- | ------------- | -------------
+watchingOptions | Boolean | false | Whether watch options for changes or not"
 calType | String | 'gregorian' | 'gregorian' & 'jalali' are available
 dtpType	| String | 'date&time' | 'date&time' & 'date' are available. (expect 'time' in next version)
 default | Number, String, Date | -- | Initial date can be Number(UNIX), String or Date and also word 'today' for auto set current date
@@ -100,6 +112,10 @@ format | String | 'YYYY/MM/DD hh:mm' | Any combination of YYYY, YY, MM, DD, hh, 
 multiple | Boolean | true | Whether user can change calendar type or not
 autoClose | Boolean | false | Closing ADMdtp on selecting a day
 transition | Boolean | true | Transition on loading days
+gregorianStartDay | Number | 0 | 0 for Sunday, 1 for Monday, ...
+minuteStep | Number | 1 | Each step for increasing or decreasing minutes
+gregorianDic | Object | __ see on examples __ | Changing title, monthsNames, daysNames and todayBtn for Gregorian Calendar
+jalaliDic | Object | __ see on examples __ | Changing title, monthsNames, daysNames and todayBtn for Jalali Calendar
 ---
 ### Custom input template
 You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted limits.
@@ -200,6 +216,31 @@ No need to destroy datepickers anymore!
 <!-- disable dynamicly -->
 <adm-dtp ng-model='date1' ></adm-dtp>
 <adm-dtp ng-model='date2' disable='{{!date1}}'></adm-dtp>
+```
+---
+### Dictionary
+```javascript
+{
+    calType:'gregorian', 
+    multiple:false,
+    gregorianDic: {
+        title: 'Grégorien',
+        monthsNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+        daysNames: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+        todayBtn: "Aujourd'hui"
+    }
+}
+```
+---
+### Gregorian Start Day
+```html
+<!-- 
+    0 -> Sunday
+    1 -> Monday
+    ...
+    6 -> Satudary
+-->
+<adm-dtp ng-model='date' options='{gregorianStartDay: 1}'></adm-dtp>
 ```
 ---
 ### Events

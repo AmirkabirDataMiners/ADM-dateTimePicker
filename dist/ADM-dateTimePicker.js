@@ -3,13 +3,16 @@
  * 
  * Demo: http://amirkabirdataminers.github.io/ADM-dateTimePicker
  *
- * @version 1.1.11
+ * @version 1.2.0
  *
  * © 2017 Amirkabir Data Miners <info@adm-co.net> - www.adm-co.net
  */
 
 (function(angular) {
     'use strict';
+    
+    if (!angular.merge)
+        angular.merge = angular.extend;
 
     String.prototype.toPersianDigits = function(){
         var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
@@ -30,9 +33,13 @@
         return this.map(function(item) {return Number(item);});
     };
     Array.prototype.dtp_toDate = function(type) {
-        var date = this.join('-');
+        var splitter = '-';
+        if (/invalid/i.test(new Date('1991-9-12')))
+            splitter = '/';
+        
+        var date = this.join(splitter);
         if (this.length == 5)
-            date = this.slice(0,3).join('-') +' '+ this.slice(3,5).join(':')
+            date = this.slice(0,3).join(splitter) +' '+ this.slice(3,5).join(':')
         if (!type) return date;
         date = new Date(date);
         if (type == 'unix')
@@ -55,7 +62,21 @@
             autoClose: false,
             transition: true,
             disabled: [],
-            smartDisabling: true
+            smartDisabling: true,
+            minuteStep: 1,
+            gregorianStartDay: 0,
+            gregorianDic: {
+                title: 'Gregorian',
+                monthsNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                daysNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                todayBtn: 'Today',
+            },
+            jalaliDic: {
+                title: 'جلالی',
+                monthsNames: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
+                daysNames: ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'],
+                todayBtn: 'امروز'
+            }
         };
 
         var ADMdtp = {
@@ -68,10 +89,10 @@
         this.setOptions = function(type, customOptions) {
             if (!customOptions) {
                 customOptions = type;
-                options = angular.extend(options, customOptions);
+                options = angular.merge(options, customOptions);
                 return;
             }
-            options[type] = angular.extend(options[type] || {}, customOptions);
+            options[type] = angular.merge(options[type] || {}, customOptions);
         };
 
         this.$get = function() {
@@ -534,10 +555,10 @@
         this.validateJalaliDateSeparate = function(date, time) {
             if (date.length!=3 || time.length!=2)
                 return false;
-
+            
             if (time[0]>23 || time[0]<0 || time[1]>59 || time[1]<0 || date[0]<0 || date[1]<1 || date[1]>12)
                 return false;
-
+            
             if (date[1]>0 && date[1]<7) {
                 if (date[2]<1 || date[2]>31)
                     return false;
@@ -559,10 +580,10 @@
             
             if (typeof input == "number") {
                 var _gDate = new Date(input);
-                if (_gDate == 'Invalid Date')
+                if (/invalid/i.test(_gDate))
                     return false;
                 var _pDate = this.convertToJalali(_gDate);
-                _dateTime = angular.extend(_pDate, {hour: _gDate.getHours(), minute: _gDate.getMinutes()});
+                _dateTime = angular.merge(_pDate, {hour: _gDate.getHours(), minute: _gDate.getMinutes()});
             }
             else if (typeof input == "string")
                 _dateTime = this.parseString(input, format);
@@ -616,7 +637,7 @@
             }
             else if (type == 'gregorian') {
                 var _dateTime = new Date(this.toRegularFormat(value, type));
-                return (_dateTime=='Invalid Date')?null:_dateTime.getTime();
+                return (/invalid/i.test(_dateTime))?null:_dateTime.getTime();
             }
             
             return null;
@@ -645,7 +666,7 @@
                 date = _date;
             }
             if (date instanceof Object) {
-                return angular.extend(ADMdtpConvertor.toJalali(date.year, date.month, date.day), {unix: date.unix});
+                return angular.merge(ADMdtpConvertor.toJalali(date.year, date.month, date.day), {unix: date.unix});
             }
         };
         this.parseDisablePattern = function(options) {
@@ -659,7 +680,7 @@
                 for (var i=0,j=arr.length; i<j; i++) {
                     if (typeof arr[i] == "number") {
                         var _gDate = new Date(arr[i]);
-                        if (_gDate != 'Invalid Date')
+                        if (!/invalid/i.test(_gDate))
                             _static[this.removeTime(_gDate).getTime()] = true;
                     }
                     else if (typeof arr[i] == "string") {
@@ -773,7 +794,8 @@
             convertFromUnix: this.convertFromUnix,
             convertToJalali: this.convertToJalali,
             parseDisablePattern: this.parseDisablePattern,
-            isDayDisable: this.isDayDisable
+            isDayDisable: this.isDayDisable,
+            counter: 0
         }
     }
     
@@ -782,8 +804,10 @@
         return {
             restrict: 'E',
             replace: true,
-            require: '^^admDtp',
-            link: function(scope, element, attrs, admDtp) {
+            //require: '^^admDtp',
+            link: function(scope, element, attrs) {
+
+                var admDtp = scope.api;
                 
                 var _standValue;
                 if (!scope.dtpValue.unix)
@@ -915,6 +939,8 @@
                 }
 
                 scope.changeTimeValue = function(variable, value) {
+                    value *= (variable=='minute' ? scope.option.minuteStep : 1);
+                    
                     var _num = (Number(scope.time[variable]) + value + ((variable=='hour')?24:60)) % ((variable=='hour')?24:60);
                     var _timeCopy = angular.copy(scope.time);
                     _timeCopy[variable] = _num.lZero();
@@ -935,18 +961,19 @@
                     
                     admDtp.reload();
                 }
-
+                
                 scope.modelChanged = function(input) {
                     
                     var _value = (angular.isDefined(input) ? input : scope.dtpValue.formated);
                     
-                    if (!_value && scope.dtpValue.unix) {
-                        scope.destroy();
+                    if (!_value) {
+                        if (scope.dtpValue.unix)
+                            scope.destroy();
                         return;
                     }
                     
                     var _inputUnix = ADMdtpFactory.convertToUnix(_value, scope.calType, scope.option.format);
-                    if (!_inputUnix || ((scope.minDate && !ADMdtpFactory.isDateBigger(_inputUnix,scope.minDate)) || (scope.maxDate && !ADMdtpFactory.isDateBigger(scope.maxDate,_inputUnix)))) {
+                    if (!_inputUnix || scope.option.freezeInput || scope.disable || ((scope.minDate && !ADMdtpFactory.isDateBigger(_inputUnix,scope.minDate)) || (scope.maxDate && !ADMdtpFactory.isDateBigger(scope.maxDate,_inputUnix)))) {
                         admDtp.updateMasterValue(false);
                         return;
                     }
@@ -965,11 +992,11 @@
                 }
                 admDtp.modelChanged = scope.modelChanged;
                 
-                scope.calTypeChanged = function() {
-                    scope.calType = (scope.calType=='gregorian')?'jalali':'gregorian';
+                scope.calTypeChanged = function(calType) {
+                    scope.calType = (calType ? calType : ((scope.calType=='gregorian')?'jalali':'gregorian'));
                     
-                    scope.monthNames = constants.calendars[scope.calType].monthsNames;
-                    scope.daysNames = constants.calendars[scope.calType].daysNames;
+                    scope.monthNames = scope.option[scope.calType + 'Dic'].monthsNames;
+                    scope.daysNames = scope.option[scope.calType + 'Dic'].daysNames;
                     
                     var _cur = angular.copy(scope.current);
                     var _mainDate;
@@ -993,7 +1020,7 @@
                 
             },
             //templateUrl: 'js/ADM-dateTimePicker/ADM-dateTimePicker_calendar.html'
-            template: '<div class="ADMdtp-box ADMdtp-calendar-container" ng-class="{square: monthPickerStat||timePickerStat}"> <div class="dtpNewBox" ng-class="{active: monthPickerStat}"> <i class="calendarIcon" ng-class="{show: monthPickerStat}" ng-click="monthPickerStat = false"> <svg class="dtp-i" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-calendar" /> </svg> </i> <div class="content"> <div class="ADMdtpMonths" ng-class="{onYear: yearSelectStat, rtl: (calType==\'jalali\')}"> <div class="ADMdtpYears"> <svg class="dtp-i dtp-i-180 dtp-trs-3 arrow left" viewBox="0 0 24 24" ng-if="yearSelectStat" ng-click="previousYear()"> <use xlink:href="#dtp-i-right" /> </svg> <p class="dtp-trs-3" ng-click="selectYearInit()">{{current.year | digitType:calType}}</p> <svg class="dtp-i dtp-trs-3 arrow right" viewBox="0 0 24 24" ng-if="yearSelectStat" ng-click="nextYear()"> <use xlink:href="#dtp-i-right" /> </svg> </div> <span ng-repeat="yearName in generatedYears" ng-if="yearSelectStat"><span class="dtp-trs-5" ng-class="{selected: yearName==current.year}" ng-click="selectYear(yearName)">{{yearName | digitType:calType}}</span></span> <span ng-repeat="monthName in monthNames" ng-if="!yearSelectStat"><span class="dtp-trs-5" ng-class="{selected: monthName==current.monthDscr}" ng-click="selectMonth($index)">{{monthName}}</span></span> </div> </div> </div> <div class="dtpNewBox" ng-class="{active: timePickerStat}"> <i class="calendarIcon" ng-class="{show: timePickerStat}" ng-click="timePickerStat = false"> <svg class="dtp-i" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-calendar" /> </svg> </i> <div class="content"> <div class="ADMdtpTime"> <span class="dtpIcon null up" ng-click="changeTimeValue(\'hour\', 1)"><svg class="dtp-i dtp-trs-5 dtp-i-270" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span><!-- --><span></span><!-- --><span class="dtpIcon null up" ng-click="changeTimeValue(\'minute\', 1)"><svg class="dtp-i dtp-trs-5 dtp-i-270" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span><!-- --><span>{{time.hour}}</span><!-- --><span class="period">:</span><!-- --><span>{{time.minute}}</span><!-- --><span class="dtpIcon null down" ng-click="changeTimeValue(\'hour\', -1)"><svg class="dtp-i dtp-trs-5 dtp-i-90" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span><!-- --><span></span><!-- --><span class="dtpIcon null down" ng-click="changeTimeValue(\'minute\', -1)"><svg class="dtp-i dtp-trs-5 dtp-i-90" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span> </div> </div> </div> <header> <svg class="dtp-i dtp-i-180 dtp-trs-3 arrow left" viewBox="0 0 24 24" ng-click="previousMonth()"> <use xlink:href="#dtp-i-right" /> </svg> <span class="yearMonth" ng-click="selectMonthInit()">{{current.monthDscr}} {{current.year | digitType:calType}}</span> <svg class="dtp-i dtp-trs-3 arrow right" viewBox="0 0 24 24" ng-click="nextMonth()"> <use xlink:href="#dtp-i-right" /> </svg> </header> <div class="daysNames"> <span ng-repeat="dayName in daysNames">{{dayName}}</span> </div> <hr> <div class="ADMdtpDays" ng-class="{loading:loadingDays}"> <span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType==\'jalali\')?\'max\':\'min\'):\'\', (day.isMax)?((calType==\'jalali\')?\'min\':\'max\'):\'\']">{{day.day | digitType:calType}}</span></span> </div> <hr> <footer> <div class="calTypeContainer dtp-trs-3" ng-class="$parent.calType" ng-click="calTypeChanged()" ng-if="option.multiple"> <p class="gregorian">Gregorian</p> <p class="jalali">جلالی</p> </div> <button type="button" class="today dtp-trs-3" ng-click="today()">{{(calType=="jalali")?"امروز":"Today"}}</button> <svg class="dtp-i dtp-trs-5 timeSelectIcon" viewBox="0 0 24 24" ng-click="timePickerStat = !timePickerStat"> <use xlink:href="#dtp-i-clock" /> </svg> </footer> </div>'
+            template: '<div class="ADMdtp-box ADMdtp-calendar-container" ng-class="{rtl: (calType==\'jalali\'), square: monthPickerStat||timePickerStat}"> <div class="dtpNewBox" ng-class="{active: monthPickerStat}"> <i class="calendarIcon" ng-class="{show: monthPickerStat}" ng-click="monthPickerStat = false"> <svg class="dtp-i" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-calendar" /> </svg> </i> <div class="content"> <div class="ADMdtpMonths" ng-class="{onYear: yearSelectStat, rtl: (calType==\'jalali\')}"> <div class="ADMdtpYears"> <svg class="dtp-i dtp-i-180 dtp-trs-3 arrow left" viewBox="0 0 24 24" ng-if="yearSelectStat" ng-click="previousYear()"> <use xlink:href="#dtp-i-right" /> </svg> <p class="dtp-trs-3" ng-click="selectYearInit()">{{current.year | digitType:calType}}</p> <svg class="dtp-i dtp-trs-3 arrow right" viewBox="0 0 24 24" ng-if="yearSelectStat" ng-click="nextYear()"> <use xlink:href="#dtp-i-right" /> </svg> </div> <span ng-repeat="yearName in generatedYears" ng-if="yearSelectStat"><span class="dtp-trs-5" ng-class="{selected: yearName==current.year}" ng-click="selectYear(yearName)">{{yearName | digitType:calType}}</span></span> <span ng-repeat="monthName in monthNames" ng-if="!yearSelectStat"><span class="dtp-trs-5" ng-class="{selected: monthName==current.monthDscr}" ng-click="selectMonth($index)">{{monthName}}</span></span> </div> </div> </div> <div class="dtpNewBox" ng-class="{active: timePickerStat}"> <i class="calendarIcon" ng-class="{show: timePickerStat}" ng-click="timePickerStat = false"> <svg class="dtp-i" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-calendar" /> </svg> </i> <div class="content"> <div class="ADMdtpTime"> <span class="dtpIcon null up" ng-click="changeTimeValue(\'hour\', 1)"><svg class="dtp-i dtp-trs-5 dtp-i-270" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span><!-- --><span></span><!-- --><span class="dtpIcon null up" ng-click="changeTimeValue(\'minute\', 1)"><svg class="dtp-i dtp-trs-5 dtp-i-270" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span><!-- --><span>{{time.hour}}</span><!-- --><span class="period">:</span><!-- --><span>{{time.minute}}</span><!-- --><span class="dtpIcon null down" ng-click="changeTimeValue(\'hour\', -1)"><svg class="dtp-i dtp-trs-5 dtp-i-90" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span><!-- --><span></span><!-- --><span class="dtpIcon null down" ng-click="changeTimeValue(\'minute\', -1)"><svg class="dtp-i dtp-trs-5 dtp-i-90" viewBox="0 0 24 24"><use xlink:href="#dtp-i-right" /></svg></span> </div> </div> </div> <header> <svg class="dtp-i dtp-i-180 dtp-trs-3 arrow left" viewBox="0 0 24 24" ng-click="previousMonth()"> <use xlink:href="#dtp-i-right" /> </svg> <span class="yearMonth" ng-click="selectMonthInit()">{{current.monthDscr}} {{current.year | digitType:calType}}</span> <svg class="dtp-i dtp-trs-3 arrow right" viewBox="0 0 24 24" ng-click="nextMonth()"> <use xlink:href="#dtp-i-right" /> </svg> </header> <div class="daysNames"> <span ng-repeat="dayName in daysNames">{{dayName}}</span> </div> <hr> <div class="ADMdtpDays" ng-class="{loading:loadingDays}"> <span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType==\'jalali\')?\'max\':\'min\'):\'\', (day.isMax)?((calType==\'jalali\')?\'min\':\'max\'):\'\']">{{day.day | digitType:calType}}</span></span> </div> <hr> <footer> <div class="calTypeContainer dtp-trs-3" ng-class="$parent.calType" ng-click="calTypeChanged()" ng-if="option.multiple"> <p class="gregorian">{{option.gregorianDic.title}}</p> <p class="jalali">{{option.jalaliDic.title}}</p> </div> <button type="button" class="today dtp-trs-3" ng-click="today()">{{option[calType + "Dic"].todayBtn}}</button> <svg class="dtp-i dtp-trs-5 timeSelectIcon" viewBox="0 0 24 24" ng-show="option.dtpType != \'date\'" ng-click="timePickerStat = !timePickerStat"> <use xlink:href="#dtp-i-clock" /> </svg> </footer> </div>'
         }
     }
 
@@ -1003,17 +1030,23 @@
             restrict: 'E',
             replace: true,
             transclude: true,
-            require: 'ngModel',
+            require: ['ngModel', 'admDtp'],
             scope: {
                 options: '=?',
                 fullData: '=?',
-                onChange: '&',
-                onDatechange: '&',
-                onTimechange: '&',
-                onOpen: '&',
-                onClose: '&',
+                name: '=?',
+                ngRequired: '=?',
+                onChange: '&?',
+                onDatechange: '&?',
+                onTimechange: '&?',
+                onOpen: '&?',
+                onClose: '&?',
             },
-            link: function(scope, element, attrs, ngModel) {
+            link: function(scope, element, attrs, ctrls) {
+                var ngModel = ctrls[0], admDtp = ctrls[1];
+                scope.api = admDtp;
+                scope.dtpId = 'adm-' + (++ADMdtpFactory.counter);
+                
                 if (!element.find('ng-transclude').children().length) {
                     scope.defaultTemplate = true;
                     element.find('ng-transclude').remove();
@@ -1022,11 +1055,16 @@
                 var _options = scope.options;
                 if (!(_options instanceof Object))
                     _options = {};
-                scope.option = angular.extend(angular.copy(ADMdtp.getOptions()), _options);
+                scope.option = angular.merge(angular.copy(ADMdtp.getOptions()), _options);
+                scope.option.minuteStep = Math.max(Math.min(scope.option.minuteStep, 60), 1);
+                var dayNames = angular.copy(scope.option.gregorianDic.daysNames);
+                scope.option.gregorianDic.daysNamesUntouched = dayNames;
+                scope.option.gregorianDic.daysNames = dayNames.slice(scope.option.gregorianStartDay,7).concat(dayNames.slice(0,scope.option.gregorianStartDay));
+                
                 scope.disableDays = ADMdtpFactory.parseDisablePattern(scope.option);
                 scope.calType = scope.option.calType;
-                scope.monthNames = constants.calendars[scope.calType].monthsNames;
-                scope.daysNames = constants.calendars[scope.calType].daysNames;
+                scope.monthNames = scope.option[scope.calType + 'Dic'].monthsNames;
+                scope.daysNames = scope.option[scope.calType + 'Dic'].daysNames;
                 scope.timeoutValue = [0,0];
                 scope.dtpValue = {};
 
@@ -1048,6 +1086,9 @@
 
                     scope.$applyAsync(function() {
                         scope.dtpValue = newDate;
+                        var minute = Number(scope.time.minute);
+                        minute -= minute % scope.option.minuteStep;
+                        scope.time.minute = minute.lZero();
                         scope.dtpValue.formated = ADMdtpFactory.dateFormat(newDate, scope.time, scope.option.format);
                         scope.dtpValue.fullDate = ADMdtpFactory.joinTime(newDate.unix, scope.time);
                         scope.fullData = {
@@ -1085,7 +1126,6 @@
                 }
                 
                 scope.parseInputValue = function(valueStr, resetTime, releaseTheBeast) {
-                    
                     if (valueStr == 'today') {
                         valueStr = ADMdtpFactory.removeTime(new Date()).getTime();
                     }
@@ -1102,7 +1142,7 @@
                                 valueStr = ADMdtpFactory.toRegularFormat(valueStr, scope.calType, scope.option.format);
                                 
                             _dateTime = new Date(valueStr);
-                            _dateTime = (_dateTime == 'Invalid Date')?false:_dateTime;
+                            _dateTime = (/invalid/i.test(_dateTime))?false:_dateTime;
                         }
                     }
 
@@ -1136,10 +1176,10 @@
                 scope.parseInputValue(ngModel.$viewValue || scope.option.default, true, false);
                 
                 ngModel.$formatters.push(function (val) {
-                    if (!val)
+                    if (!val && scope.dtpValue.unix) {
                         scope.destroy();
+                    }
                     else if (scope.dtpValue && val == scope.dtpValue.formated) {
-                        return;
                     }
                     else {
                         scope.parseInputValue(val, false, true);
@@ -1147,6 +1187,29 @@
 
                     return val;
                 });
+                
+                if (scope.option.watchingOptions) {
+                    //return;
+                    scope.$watch('options', function(nuVal, old) {
+                        if (!nuVal || typeof nuVal != 'object') return;
+                        if (old && JSON.stringify(old) == JSON.stringify(nuVal)) return;
+                        
+                        var daysNamesUntouched = scope.option.gregorianDic.daysNamesUntouched;
+                        scope.option = angular.merge(angular.copy(ADMdtp.getOptions()), nuVal);
+                        scope.option.minuteStep = Math.max(Math.min(scope.option.minuteStep, 60), 1);
+                        
+                        if (nuVal.gregorianDic && nuVal.gregorianDic.daysNames)
+                            scope.option.gregorianDic.daysNamesUntouched = nuVal.gregorianDic.daysNames;
+                        else
+                            scope.option.gregorianDic.daysNamesUntouched = daysNamesUntouched;
+                        
+                        var dayNames = angular.copy(scope.option.gregorianDic.daysNamesUntouched);
+                        scope.option.gregorianDic.daysNames = dayNames.slice(scope.option.gregorianStartDay,7).concat(dayNames.slice(0,scope.option.gregorianStartDay));
+
+                        scope.disableDays = ADMdtpFactory.parseDisablePattern(scope.option);
+                        if (scope.calTypeChanged) scope.calTypeChanged(scope.option.calType);
+                    }, true);
+                }                
                 
                 attrs.$observe("disable", function (_newVal) {
                     scope.$applyAsync(function() {
@@ -1168,6 +1231,11 @@
                         scope.maxDate = ADMdtpFactory.convertToUnix(_newVal, scope.calType, scope.option.format);
                     });
                 }); 
+
+                scope.onKeydown = function(e) {
+                    if (e.keyCode == 9)
+                        scope.closeCalendar();
+                }
                 
                 scope.openCalendar = function() {
                     if (scope.showCalendarStat || scope.disable)
@@ -1176,16 +1244,17 @@
                     scope.timeoutValue[0] = 0;
                     scope.showCalendarStat = true;
                     
-                    var _admDtpCalendarHtml = angular.element('<adm-dtp-calendar style="opacity:0;"></adm-dtp-calendar>');
-                    angular.element(element.children()[0]).append(_admDtpCalendarHtml);
+                    var _admDtpCalendarHtml = angular.element('<adm-dtp-calendar id="'+ scope.dtpId +'" style="opacity:0; z-index: '+ scope.option.zIndex +';"></adm-dtp-calendar>');
+                    angular.element(document.body).append(_admDtpCalendarHtml);
 
                     scope.$applyAsync(function () {
                         $compile(_admDtpCalendarHtml)(scope);
                     });
                     
                     $timeout(function() {
-                        var _element = angular.element(element.children()[0]).children()[1];
-                        var _elementBound = _element.getBoundingClientRect();
+                        var top = document.documentElement.scrollTop || document.body.scrollTop;
+                        var popup = document.getElementById(scope.dtpId);
+                        var popupBound = popup.getBoundingClientRect();
                         var _input = element.children().children()[0];
                         var _inputBound = _input.getBoundingClientRect();
                         var _corner = {
@@ -1194,8 +1263,8 @@
                         }
 
                         var _totalSize = {
-                            width: _elementBound.width + _corner.x,
-                            height: _elementBound.height + _corner.y
+                            width: popupBound.width + _corner.x,
+                            height: popupBound.height + _corner.y
                         }
                         
                         var _pos = {
@@ -1205,16 +1274,16 @@
                             right: ''
                         }
                         if (_totalSize.height > window.innerHeight)
-                            _pos.bottom = _inputBound.height + 'px';
+                            _pos.top = (top + _inputBound.top - popupBound.height) + 'px';
                         else
-                            _pos.top = _inputBound.height + 'px';
-                            
-                        if (_totalSize.width > window.innerWidth)
-                            _pos.left = (window.innerWidth - _totalSize.width - 20) + 'px';
-                        else
-                            _pos.left = 0;
+                            _pos.top = (top + _inputBound.top + _inputBound.height) + 'px';
                         
-                        angular.element(_element).css({top: _pos.top, bottom: _pos.bottom, left: _pos.left, opacity: 1});
+                        if (_totalSize.width > window.innerWidth)
+                            _pos.left = (_corner.x + window.innerWidth - _totalSize.width - 20) + 'px';
+                        else
+                            _pos.left = _corner.x + 'px';
+                        
+                        angular.element(popup).css({top: _pos.top, bottom: _pos.bottom, left: _pos.left, opacity: 1});
                         
                     }, 70);
                     
@@ -1231,9 +1300,10 @@
                         scope.timePickerStat = false;
                         scope.showCalendarStat = false;
                     });
-                                        
-                    if (angular.element(element.children()[0]).children()[1]) {
-                        angular.element(angular.element(element.children()[0]).children()[1]).remove();
+                
+                    var popup = document.getElementById(scope.dtpId);
+                    if (popup) {
+                        angular.element(popup).remove();
                         
                         if (scope.onClose)
                             scope.onClose();
@@ -1279,7 +1349,7 @@
                     ngModel.$render();
                     
                     if (!noRefresh)
-                        scope.fillDays(_standValue, !scope.option.transition);
+                        admDtp.fillDays(_standValue, !scope.option.transition);
                     
                     if (scope.onChange)
                         scope.onChange({date:scope.fullData});
@@ -1297,159 +1367,160 @@
                 var dtpDestroy = element[0].querySelector('[dtp-destroy]') || {};
                 dtpDestroy.onclick = scope.destroy;
             },
-            controller: ['$scope',
-                function($scope) {
+            controller: ['$scope', function($scope) {
 
-                    this.updateMasterValue = function(newDate, releaseTheBeast) {
-                        $scope.updateMasterValue(newDate, releaseTheBeast);
-                    }
-                    
-                    this.fillDays = function(date, noTransition) {
-                        
-                        if (noTransition)
-                            $scope.timeoutValue[0] = 0;
-                        else
-                            $scope.loadingDays = true;
-
-                            
-                            var _mainDate = angular.copy(date);
-
-                            if ($scope.calType == 'jalali') {
-                                var _gDate = ADMdtpConvertor.toGregorian(date.year, date.month, 29);
-                                date = [_gDate.year, _gDate.month, _gDate.day].dtp_toDate('date');
-                            }
-
-                            var _input = {
-                                year: date.getFullYear(),
-                                month: date.getMonth()+1,
-                                day: date.getDate()
-                            }
-
-                            $scope.$applyAsync(function() {
-                                var _month = _mainDate.month || (_mainDate.getMonth()+1);
-                                angular.extend($scope.current, {
-                                    year: _mainDate.year || _mainDate.getFullYear(),
-                                    month: _month,
-                                    monthDscr: $scope.monthNames[_month-1]
-                                });
-                            });
-
-                            var _today = new Date();
-                            _today = [_today.getFullYear(), _today.getMonth()+1, _today.getDate()].dtp_toDate('unix');
-
-                            var _selected = ($scope.dtpValue.unix || -1), _selectedIdx;
-
-                            var _currDay = [_input.year, _input.month, _input.day].dtp_toDate('date');
-                            var _firstDayName = new Date(angular.copy(_currDay).setDate(1)).getDay();
-
-                            var _days = [];
-
-                            var _diff = -1 * _firstDayName,
-                                _ite_date, _disable = true;
-                            var _lastValidStat = -1;
-
-                            if ($scope.calType == 'jalali') {
-                                var _ite_date = new Date(angular.copy(_currDay).setDate(_diff));
-                                var _pDate = ADMdtpConvertor.toJalali(_ite_date.getFullYear(), _ite_date.getMonth()+1, _ite_date.getDate());
-                                _diff -= (Math.ceil((_pDate.day-1)/7)*7 + 1);
-                            }
-
-                            while (true) {
-                                _diff++;
-                                var _ite_date = new Date(angular.copy(_currDay).setDate(_diff));
-                                var _pDate = false;
-
-                                if ($scope.calType == 'jalali') {
-                                    _pDate = ADMdtpConvertor.toJalali(_ite_date.getFullYear(), _ite_date.getMonth()+1, _ite_date.getDate());
-                                }
-
-                                var _thisDay = _pDate.day || _ite_date.getDate();
-
-                                if (_thisDay == 1)
-                                    _disable = !_disable;
-
-                                if (_disable && _thisDay < 8)
-                                    if (($scope.calType == 'jalali' && _ite_date.getDay() == 6) || ($scope.calType == 'gregorian' && _ite_date.getDay() == 0))
-                                        break;
-
-
-                                var _isMin = false;
-                                var _valid = 1;
-                                if ($scope.minDate || $scope.maxDate) {
-                                    var _dateTime = ADMdtpFactory.joinTime(_ite_date, $scope.time);
-                                    if (($scope.minDate && !ADMdtpFactory.isDateBigger(_dateTime,$scope.minDate)) || ($scope.maxDate && !ADMdtpFactory.isDateBigger($scope.maxDate,_dateTime))) {
-                                        _valid = 0;
-
-                                        if (_lastValidStat == 2)
-                                            _days[_days.length-1].isMax = true;
-                                    }
-                                    else {
-                                        _valid = 2;
-
-                                        if (_lastValidStat == 0)
-                                            _isMin = true;
-                                    }
-                                    _lastValidStat = _valid;
-                                }
-
-                                var _unix = _ite_date.getTime();
-                                var _dayName = _ite_date.getDay() + (($scope.calType=='jalali')?1:0);
-
-                                var _day = {
-                                    day: _thisDay,
-                                    month: _pDate.month || _ite_date.getMonth()+1,
-                                    year: _pDate.year || _ite_date.getFullYear(),
-                                    dayName: _dayName,
-                                    fullDate: _ite_date,
-                                    disable: _disable,
-                                    today: (_unix == _today),
-                                    selected: (_unix == _selected),
-                                    unix: _unix,
-                                    valid: _valid,
-                                    isMin: _isMin
-                                }
-                                
-                                if (ADMdtpFactory.isDayDisable($scope.calType, $scope.disableDays, _day))
-                                    _day.valid = 0;
-
-                                if (_day.selected)
-                                    _selectedIdx = _days.length;
-
-                                _days.push(_day);
-                            }
-                        
-                        $timeout(function() {
-                            
-                            $scope.timeoutValue[0] = 500;
-                            
-                            $scope.$applyAsync(function() {
-                                $scope.current.days = _days;
-                                if (_selectedIdx)
-                                    $scope.updateMasterValue($scope.current.days[_selectedIdx]);
-                                $timeout(function() {
-                                    $scope.loadingDays = false;
-                                }, $scope.timeoutValue[1]);
-                            });
-                            
-                        }, $scope.timeoutValue[0]);
-                    }
-                    
-                    this.reload = function() {
-                        var _cur = angular.copy($scope.current);
-                        _cur.day = 29;
-                        var _date = [_cur.year, _cur.month, 8].dtp_toDate('date');
-                        if ($scope.calType == 'jalali')
-                            _date = _cur;
-                        this.fillDays(_date, !$scope.option.transition);
-                    }
-                    
-                    $scope.fillDays = this.fillDays;
-                    
-                    this.vm = $scope;
+                this.updateMasterValue = function(newDate, releaseTheBeast) {
+                    $scope.updateMasterValue(newDate, releaseTheBeast);
                 }
-            ],
+
+                this.fillDays = function(date, noTransition) {
+
+                    if (noTransition)
+                        $scope.timeoutValue[0] = 0;
+                    else
+                        $scope.loadingDays = true;
+
+
+                    var _mainDate = angular.copy(date);
+
+                    if ($scope.calType == 'jalali') {
+                        var _gDate = ADMdtpConvertor.toGregorian(date.year, date.month, 29);
+                        date = [_gDate.year, _gDate.month, _gDate.day].dtp_toDate('date');
+                    }
+
+                    var _input = {
+                        year: date.getFullYear(),
+                        month: date.getMonth()+1,
+                        day: date.getDate()
+                    }
+
+                    $scope.$applyAsync(function() {
+                        var _month = _mainDate.month || (_mainDate.getMonth()+1);
+                        angular.merge($scope.current, {
+                            year: _mainDate.year || _mainDate.getFullYear(),
+                            month: _month,
+                            monthDscr: $scope.monthNames[_month-1]
+                        });
+                    });
+
+                    var startDay, shift = startDay = $scope.option.gregorianStartDay;
+
+                    if ($scope.calType == 'jalali')
+                        shift = 0, startDay = 6;
+
+                    var _today = new Date();
+                    _today = [_today.getFullYear(), _today.getMonth()+1, _today.getDate(), 1, 0].dtp_toDate('unix');
+
+                    var _selected = ($scope.dtpValue.unix || -1), _selectedIdx;
+
+                    var _currDay = [_input.year, _input.month, _input.day, 1, 0].dtp_toDate('date');
+                    var _firstDayName = new Date(angular.copy(_currDay).setDate(1)).getDay();
+
+                    var _days = [];
+
+                    var _diff = -1 * (_firstDayName - shift + 7) % 7,
+                        _ite_date, _disable = true;
+                    var _lastValidStat = -1;
+
+                    if ($scope.calType == 'jalali') {
+                        var _ite_date = new Date(angular.copy(_currDay).setDate(_diff));
+                        var _pDate = ADMdtpConvertor.toJalali(_ite_date.getFullYear(), _ite_date.getMonth()+1, _ite_date.getDate());
+                        _diff -= (Math.ceil((_pDate.day-1)/7)*7 + 1);
+                    }
+
+
+                    while (true) {
+                        _diff++;
+                        var _ite_date = new Date(angular.copy(_currDay).setDate(_diff));
+                        var _pDate = false;
+
+                        if ($scope.calType == 'jalali') {
+                            _pDate = ADMdtpConvertor.toJalali(_ite_date.getFullYear(), _ite_date.getMonth()+1, _ite_date.getDate());
+                        }
+
+                        var _thisDay = _pDate.day || _ite_date.getDate();
+
+                        if (_thisDay == 1)
+                            _disable = !_disable;
+
+                        if (_disable && _thisDay < 8 && _ite_date.getDay() == startDay)
+                            break;
+
+
+                        var _isMin = false;
+                        var _valid = 1;
+                        if ($scope.minDate || $scope.maxDate) {
+                            var _dateTime = ADMdtpFactory.joinTime(_ite_date, $scope.time);
+                            if (($scope.minDate && !ADMdtpFactory.isDateBigger(_dateTime,$scope.minDate)) || ($scope.maxDate && !ADMdtpFactory.isDateBigger($scope.maxDate,_dateTime))) {
+                                _valid = 0;
+
+                                if (_lastValidStat == 2)
+                                    _days[_days.length-1].isMax = true;
+                            }
+                            else {
+                                _valid = 2;
+
+                                if (_lastValidStat == 0)
+                                    _isMin = true;
+                            }
+                            _lastValidStat = _valid;
+                        }
+
+                        var _unix = _ite_date.getTime();
+                        var _dayName = _ite_date.getDay() + (($scope.calType=='jalali')?1:0);
+                        
+                        var _day = {
+                            day: _thisDay,
+                            month: _pDate.month || _ite_date.getMonth()+1,
+                            year: _pDate.year || _ite_date.getFullYear(),
+                            dayName: _dayName,
+                            fullDate: _ite_date,
+                            disable: _disable,
+                            today: (_unix == _today),
+                            selected: (_unix == _selected),
+                            unix: _unix,
+                            valid: _valid,
+                            isMin: _isMin
+                        }
+
+                        if (ADMdtpFactory.isDayDisable($scope.calType, $scope.disableDays, _day))
+                            _day.valid = 0;
+
+                        if (_day.selected)
+                            _selectedIdx = _days.length;
+
+                        _days.push(_day);
+                    }
+
+                    $timeout(function() {
+
+                        $scope.timeoutValue[0] = 500;
+
+                        $scope.$applyAsync(function() {
+                            $scope.current.days = _days;
+                            if (_selectedIdx)
+                                $scope.updateMasterValue($scope.current.days[_selectedIdx]);
+                            $timeout(function() {
+                                $scope.loadingDays = false;
+                            }, $scope.timeoutValue[1]);
+                        });
+
+                    }, $scope.timeoutValue[0]);
+                }
+
+                this.reload = function() {
+                    var _cur = angular.copy($scope.current);
+                    _cur.day = 29;
+                    var _date = [_cur.year, _cur.month, 8].dtp_toDate('date');
+                    if ($scope.calType == 'jalali')
+                        _date = _cur;
+                    this.fillDays(_date, !$scope.option.transition);
+                }
+
+                this.vm = $scope;
+            }],
             //templateUrl: 'js/ADM-dateTimePicker/ADM-dateTimePicker_view.html'
-            template: '<div class="ADMdtp ADMdtp-container" ng-class="{rtl: (calType==\'jalali\'), touch: option.isDeviceTouch, disable: disable}"> <div class="clickOutContainer" click-out="closeCalendar()"> <ng-transclude></ng-transclude> <div ng-if="defaultTemplate" class="ADMdtpInput masterInput" ng-class="{touch: option.isDeviceTouch, disable: disable, open: showCalendarStat}"> <input type="text" ng-model="dtpValue.formated" ng-focus="openCalendar()" ng-disabled="option.freezeInput || option.isDeviceTouch || disable" ng-blur="modelChanged()"> <div class="dtp-ig" ng-click="toggleCalendar()"> <svg class="dtp-i fakeIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-right" /> </svg> <svg class="dtp-i calendarIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-calendar" /> </svg> <svg class="dtp-i closeIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-off" /> </svg> </div> <svg class="removeIcon" viewBox="0 0 24 24" ng-if="dtpValue.formated" ng-click="destroy()"> <use stroke-width="20" xlink:href="#dtpTimes" /> </svg> </div> </div> <svg style="display:none;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"> <defs> <g id="dtp-i-calendar"> <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-clock"> <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/> <path d="M0 0h24v24H0z" fill="none"/> <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/> </g> <g id="dtp-i-right"> <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-cloes"> <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-off"> <path d="M0 0h24v24H0z" fill="none"/> <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/> </g> </defs> </svg> </div>'
+            template: '<div class="ADMdtp ADMdtp-container" ng-class="{rtl: (calType==\'jalali\'), touch: option.isDeviceTouch, disable: disable}"> <div class="clickOutContainer" click-out="closeCalendar()"  alias="{{dtpId}}"> <ng-transclude></ng-transclude> <div ng-if="defaultTemplate" class="ADMdtpInput masterInput" ng-class="{touch: option.isDeviceTouch, disable: disable, open: showCalendarStat}"> <input type="text" name="{{name}}" ng-model="dtpValue.formated" ng-focus="openCalendar()" ng-click="openCalendar()" ng-readonly="option.freezeInput || option.isDeviceTouch || disable" ng-blur="modelChanged()" ng-keydown="onKeydown($event)" ng-required="ngRequired" > <div class="dtp-ig" ng-click="toggleCalendar()"> <svg class="dtp-i fakeIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-right" /> </svg> <svg class="dtp-i calendarIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-calendar" /> </svg> <svg class="dtp-i closeIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-off" /> </svg> </div> <svg class="removeIcon" viewBox="0 0 24 24" ng-if="dtpValue.formated" ng-click="destroy()"> <use xlink:href="#dtp-i-close" /> </svg> </div> </div> <svg style="display:none;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"> <defs> <g id="dtp-i-calendar"> <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-clock"> <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/> <path d="M0 0h24v24H0z" fill="none"/> <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/> </g> <g id="dtp-i-right"> <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-close"> <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-off"> <path d="M0 0h24v24H0z" fill="none"/> <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/> </g> </defs> </svg> </div>'
         };
     }
     
@@ -1484,15 +1555,16 @@
                 clickOut: '&'
             },
             link: function ($scope, elem, attr) {
-                var classList = (attr.outsideIfNot !== undefined) ? attr.outsideIfNot.replace(', ', ',').split(',') : [];
                 if (attr.id == undefined) attr.$set('id', 'id_' + Math.random());
-                if (attr.id !== undefined) classList.push(attr.id);
 
                 $document.on('click contextmenu', function (e) {
                     var i = 0,
                         element;
 
                     if (!e.target) return;
+                    
+                    var classList = (attr.alias !== undefined) ? attr.alias.replace(', ', ',').split(',') : [];
+                    classList.push(attr.id);
 
                     for (element = e.target; element; element = element.parentNode) {
                         var id = element.id;
@@ -1514,6 +1586,7 @@
     }
     
     var ADMdtpConfig = function(ADMdtp) {
+        
         ADMdtp.setOptions({isDeviceTouch: ('ontouchstart' in window || navigator.maxTouchPoints)});
         
         var style = document.createElement('style');
@@ -1531,18 +1604,7 @@
     }
 
     return angular.module('ADM-dateTimePicker', [])
-        .constant('constants', {
-            calendars: {
-                gregorian: {
-                    monthsNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                    daysNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                },
-                jalali: {
-                    monthsNames: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
-                    daysNames: ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']
-                }
-            }
-        })
+        .constant('constants', {})
         .provider('ADMdtp', ADMdtpProvider)
         .filter('digitType', [ADMdtpDigitTypeFilter])
         .factory('ADMdtpConvertor', [ADMdtpConvertor])
@@ -1553,3 +1615,6 @@
         .directive('clickOut', ['$document', clickOutside])
         .config(['ADMdtpProvider', ADMdtpConfig]);
 }(window.angular));
+
+
+

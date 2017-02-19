@@ -106,6 +106,11 @@ a:hover {
     }
 }
 
+.ADMdtp-calendar-container.rtl {
+    font-family: $FAfont;
+    direction: rtl;
+}
+
 .ADMdtp {
     font-family: $ENfont, sans-serif;
     line-height: 1.42857143;
@@ -113,9 +118,6 @@ a:hover {
     
     &.rtl {
         font-family: $FAfont;
-        .ADMdtp-calendar-container {
-            direction: rtl;
-        }
         .masterInput {
             input {
                 direction: ltr;
@@ -285,7 +287,7 @@ a:hover {
         top: 0;
         z-index: 3;
         fill: $red;
-        padding: 11px;
+        padding: 8px;
         cursor: pointer;
         opacity: .7;
         font-size: 1.1em;
@@ -360,23 +362,25 @@ a:hover {
     .arrow {
         position: absolute;
         display: block;
-        margin-top: 0.9em;
         cursor: pointer;
         z-index: 1;
         top: 0;
         fill: $gray;
         direction: ltr;
         font-size: 1em;
+        width: 38px;
+        height: 100%;
+        padding: 0 .3em;
         
         &.left {
-            left: 0.7em;
+            left: 0;
             &:hover {
                 margin-left: -.3em;
                 fill: darken($warmBrown, 10%);
             }
         }
         &.right {
-            right: 0.7em;
+            right: 0;
             &:hover {
                 margin-right: -.3em;
                 fill: darken($warmBrown, 10%);
@@ -385,6 +389,8 @@ a:hover {
     }
     header {
         font-size: 1.2em;
+        position: relative;
+        
         .yearMonth {
             width: 100%;
             position: relative;
@@ -422,7 +428,7 @@ a:hover {
         .today {
             position: absolute;
             display: block;
-            width: 4em;
+            width: 6em;
             height: 1.7em;
             left: 0;
             right: 0;
