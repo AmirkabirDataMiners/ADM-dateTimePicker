@@ -3,6 +3,7 @@ appControllers.controller('homeControllers', function($scope, $sce, $http, $cont
     $scope.date3Message = [];
     
     $scope.availableOptions = [
+        {name:'watchingOptions', type:'Boolean', default:'false', description:"Whether watch options for changes or not"},
         {name:'calType', type:'String', default:'gregorian', description:"<strong>'gregorian'</strong> & <strong>'jalali'</strong> are available"},
         {name:'dtpType', type:'String', default:'date&time', description:"<strong>'date&time'</strong> & <strong>'date'</strong> are available. (expect <strong>'time'</strong> in next version)"},
         {name:'default', type:'Number, String, Date', default:'--', description:"Initial date can be Number(UNIX), String or Date and also word <strong>'today'</strong> for auto set current date"},
@@ -13,6 +14,10 @@ appControllers.controller('homeControllers', function($scope, $sce, $http, $cont
         {name:'multiple', type:'Boolean', default:'true', description:'Whether user can change calendar type or not'},
         {name:'autoClose', type:'Boolean', default:'false', description:'Auto close ADMdtp on selecting a day'},
         {name:'transition', type:'Boolean', default:'true', description:'Transition on loading days'},
+        {name:'gregorianStartDay', type:'Number', default:'0', description:'0 for Sunday, 1 for Monday, ...'},
+        {name:'minuteStep', type:'Number', default:'1', description:'Each step for increasing or decreasing minutes'},
+        {name:'gregorianDic', type:'Object', default:'__ see on examples __', description:'Changing title, monthsNames, daysNames and todayBtn for Gregorian Calendar'},
+        {name:'jalaliDic', type:'Object', default:'__ see on examples __', description:'Changing title, monthsNames, daysNames and todayBtn for Jalali Calendar'},
     ];
     
     $scope.availableOptions.forEach(function(item) {
@@ -39,6 +44,15 @@ appControllers.controller('homeControllers', function($scope, $sce, $http, $cont
     
     
     $scope.option2 = {calType:'gregorian', multiple:false, default:1450125000000};
+    $scope.option3 = {calType:'gregorian', multiple:false,
+                            gregorianDic: {
+                                title: 'Grégorien',
+                                monthsNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+                                daysNames: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+                                todayBtn: "Aujourd'hui"
+                            }
+                         };
+
     
     $scope.dtp1 = function(_date) {
         console.info(_date);
