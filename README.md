@@ -116,6 +116,7 @@ gregorianStartDay | Number | 0 | 0 for Sunday, 1 for Monday, ...
 minuteStep | Number | 1 | Each step for increasing or decreasing minutes
 gregorianDic | Object | __ see on examples __ | Changing title, monthsNames, daysNames and todayBtn for Gregorian Calendar
 jalaliDic | Object | __ see on examples __ | Changing title, monthsNames, daysNames and todayBtn for Jalali Calendar
+zIndex | Number | 9 | z-index of datePicker popup
 ---
 ### Custom input template
 You can put custom input template inside `<adm-dtp></adm-dtp>` but with unwanted limits.
