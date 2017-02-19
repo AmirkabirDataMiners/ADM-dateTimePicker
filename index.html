@@ -106,13 +106,33 @@
 <!--        <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&type=follow&count=true" frameborder="0" scrolling="0" width="230px" height="20px"></iframe>-->
         <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&repo=ADM-dateTimePicker&type=watch&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
         <iframe src="https://ghbtns.com/github-btn.html?user=AmirkabirDataMiners&repo=ADM-dateTimePicker&type=fork&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
-        <img src="https://img.shields.io/badge/npm-v1.1.11-brightgreen.svg" alt="">
-        <img src="https://img.shields.io/badge/bower-v1.1.11-brightgreen.svg" alt="">
+        <img src="https://img.shields.io/badge/npm-v1.2.0-brightgreen.svg" alt="">
+        <img src="https://img.shields.io/badge/bower-v1.2.0-brightgreen.svg" alt="">
         <img src="https://img.shields.io/badge/Pure-AngularJs-red.svg" alt="">
         <img src="http://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat" alt="">
 
     </h1>
     <hr>
+    <br>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid newFeatures">
+            <div class="navbar-header">
+                <img class="version" src="https://img.shields.io/badge/Updates-v1.2.0-85DEF9.svg" alt="">
+                <br>
+                <ul>
+                    <li>Now popup is appending to body instead of main element to fix some overflow & z-index issues</li>
+                    <li>Add translate option. so days & months names are no more constants</li>
+                    <li>Add option to watch options for changes</li>
+                    <li>Add option to set start day of week. <i>(setting Monday instead of Sunday for some calendars in Europe)</i></li>
+                    <li>Add option to set minutes step</li>
+                    <li>Now popup will close by hitting tab</li>
+                    <li>Add ng-required support</li>
+                    <li>Fix the bug that causes high cpu usage on Safari</li>
+                    <li>Fix removeIcon bug</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <br>
     <nav class="navbar navbar-default">
         <div class="container-fluid newFeatures">
@@ -465,6 +485,55 @@ app.config(['ADMdtpProvider', function(ADMdtp) {
     </div>
     
     <br>
+                <h2><strong>Dictionary</strong></h2>
+                    <hr>
+<div hljs hljs-language="javascript" no-escape class="customCode">
+{
+    calType:'gregorian', 
+    multiple:false,
+    gregorianDic: {
+        title: 'Grégorien',
+        monthsNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+        daysNames: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+        todayBtn: "Aujourd'hui"
+    }
+}
+</div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h3>Example:</h3>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            The gregorian calendar in French 
+                            <adm-dtp ng-model="date10" options="option3"></adm-dtp>
+                        </div>
+                    </div>
+
+                    <br>
+                    <h2><strong>Gregorian Start Day</strong></h2>
+                    <hr>
+<div hljs no-escape class="customCode">
+&lt;!-- 
+    0 -> Sunday
+    1 -> Monday
+    ...
+    6 -> Satudary
+--&gt;
+&lt;adm-dtp ng-model='date' options='{gregorianStartDay: 1}'&gt;&lt;/adm-dtp&gt;
+</div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h3>Example:</h3>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            Calendars in Europe that start with Monday instead of Sunday 
+                            <adm-dtp ng-model="date11" options="{gregorianStartDay: 1}"></adm-dtp>
+                        </div>
+                    </div>
+
+                    <br>
     <h2><strong>Events</strong></h2>
     <hr>
     <h3>Show / Hide</h3>
