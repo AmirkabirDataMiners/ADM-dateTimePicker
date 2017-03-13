@@ -1268,8 +1268,12 @@
                                 height: popupBound.height + _corner.y
                             }
                         }
-                        else
-                            _totalSize = 0;
+                        else {
+                            _totalSize = {
+                                width: 0,
+                                height: 0
+                            }
+                        }
 
                         var _pos = {
                             top: '',
