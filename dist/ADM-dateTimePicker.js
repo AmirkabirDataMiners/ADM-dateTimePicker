@@ -1024,7 +1024,7 @@
         }
     }
 
-    var ADMdtpDirective = function(ADMdtp, ADMdtpConvertor, ADMdtpFactory, constants, $compile, $timeout) {
+    var ADMdtpDirective = function(ADMdtp, ADMdtpConvertor, ADMdtpFactory, constants, $compile, $timeout, $document, $window) {
 
         return {
             restrict: 'E',
@@ -1244,48 +1244,50 @@
                     scope.timeoutValue[0] = 0;
                     scope.showCalendarStat = true;
                     
-                    var _admDtpCalendarHtml = angular.element('<adm-dtp-calendar id="'+ scope.dtpId +'" style="opacity:0; z-index: '+ scope.option.zIndex +';"></adm-dtp-calendar>');
-                    angular.element(document.body).append(_admDtpCalendarHtml);
+                    var _admDtpCalendarTemplate = '<adm-dtp-calendar id="'+ scope.dtpId +'" style="opacity:0; z-index: '+ scope.option.zIndex +';"></adm-dtp-calendar>';
 
                     scope.$applyAsync(function () {
-                        $compile(_admDtpCalendarHtml)(scope);
+                        let _admDtpCalendarHtml = $compile(_admDtpCalendarTemplate)(scope);
+                        angular.element(document.body).append(_admDtpCalendarHtml);
+                        $timeout(() => setOffset(_admDtpCalendarHtml[0]), 35);
                     });
                     
-                    $timeout(function() {
-                        var top = document.documentElement.scrollTop || document.body.scrollTop;
-                        var popup = document.getElementById(scope.dtpId);
+                    function setOffset(popup) {
+
                         var popupBound = popup.getBoundingClientRect();
+                        var top = $document[0].documentElement.scrollTop || $document[0].body.scrollTop;
                         var _input = element.children().children()[0];
                         var _inputBound = _input.getBoundingClientRect();
                         var _corner = {
                             x: _inputBound.left,
                             y: _inputBound.top + _inputBound.height
                         }
-
                         var _totalSize = {
                             width: popupBound.width + _corner.x,
                             height: popupBound.height + _corner.y
                         }
-                        
                         var _pos = {
                             top: '',
                             bottom: '',
                             left: '',
                             right: ''
                         }
-                        if (_totalSize.height > window.innerHeight)
+                        
+                        if (_totalSize.height > $window.innerHeight && (_inputBound.top - popupBound.height) < 0) {
+                            _pos.top = `${(top + 10)}px`;
+                        }
+                        else if (_totalSize.height > $window.innerHeight)
                             _pos.top = (top + _inputBound.top - popupBound.height) + 'px';
                         else
                             _pos.top = (top + _inputBound.top + _inputBound.height) + 'px';
-                        
-                        if (_totalSize.width > window.innerWidth)
-                            _pos.left = (_corner.x + window.innerWidth - _totalSize.width - 20) + 'px';
+
+                        if (_totalSize.width > $window.innerWidth)
+                            _pos.left = `${(_corner.x + $window.innerWidth - _totalSize.width)}px`;
                         else
                             _pos.left = _corner.x + 'px';
-                        
-                        angular.element(popup).css({top: _pos.top, bottom: _pos.bottom, left: _pos.left, opacity: 1});
-                        
-                    }, 70);
+
+                        angular.element(popup).css({ top: _pos.top, bottom: _pos.bottom, left: _pos.left, opacity: 1 });
+                    };
                     
                     if (scope.onOpen)
                         scope.onOpen();
@@ -1609,7 +1611,7 @@
         .filter('digitType', [ADMdtpDigitTypeFilter])
         .factory('ADMdtpConvertor', [ADMdtpConvertor])
         .factory('ADMdtpFactory', ['ADMdtpConvertor', ADMdtpFactory])
-        .directive('admDtp', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$compile', '$timeout', ADMdtpDirective])
+        .directive('admDtp', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$compile', '$timeout', '$document', '$window', ADMdtpDirective])
         .directive('admDtpCalendar', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$timeout', ADMdtpCalendarDirective])
         .directive('dtpInput', [dtpInputDirective])
         .directive('clickOut', ['$document', clickOutside])
