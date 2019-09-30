@@ -55,7 +55,7 @@
     </div>
     <hr>
     <div class="ADMdtpDays" ng-class="{loading:loadingDays}">
-        <span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{disable: day.disable||!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType=='jalali')?'max':'min'):'', (day.isMax)?((calType=='jalali')?'min':'max'):'']">{{day.day | digitType:calType}}</span></span>
+        <span ng-repeat="day in current.days" ng-click="selectThisDay(day)"><span ng-class="[{hasevent:hasEvent(day),disable: day.disable||!day.valid, today: day.today, selected: day.selected, valid:(day.valid==2)}, (day.isMin)?((calType=='jalali')?'max':'min'):'', (day.isMax)?((calType=='jalali')?'min':'max'):'']">{{day.day | digitType:calType}}</span></span>
     </div>
     <hr>
     <footer>
