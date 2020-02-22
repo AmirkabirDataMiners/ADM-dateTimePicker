@@ -850,3 +850,29 @@ a:hover {
   -webkit-transform:  rotateY(90deg) translateX(-10px);
   transform:  rotateY(90deg) translateX(-10px);
 }
+
+.ADMdtpDays .hasEvent {
+  position: relative;
+}
+
+.ADMdtpDays .hasEvent > span {
+  color: #fff;
+  background-color: #fc5f2a;
+}
+  .ADMdtpDays .hasEvent:hover .ADMdtpTooltip {
+    display: inline;
+  }
+
+.ADMdtpDays .hasEvent .ADMdtpTooltip {
+  text-align: center;
+  position: absolute;
+  display: none;
+  padding: 5px;
+  right: -25px;
+  top: 40px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  width: 100px;
+  z-index: 999;
+}

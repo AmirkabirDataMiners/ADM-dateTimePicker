@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="dist/ADM-dateTimePicker.css" />
+
+    <script src="lib/angular.min.js"></script>
+    <script src="dist/ADM-dateTimePicker.js"></script>
+
+</head>
+
+<body ng-app="DemoApp">
+    <adm-dtp ng-model='date' events='events'></adm-dtp>
+
+    <script>
+        var app = angular.module('DemoApp', ['ADM-dateTimePicker']);
+
+        app.config(['ADMdtpProvider', function (ADMdtp) {
+            ADMdtp.setOptions({
+                calType: 'jalali',
+                default: 'today',
+            });
+        }]);
+
+        app.run(['$rootScope', function ($rootScope) {
+            $rootScope.events = [{
+                title: 'رویداد یک',
+                date: '2019/09/30',
+                color: 'red'
+            }, {
+                title: 'رویداد دو',
+                date: '2019/09/31',
+                color: 'blue'
+            }];
+        }]);
+    </script>
+</body>
+
+</html>
