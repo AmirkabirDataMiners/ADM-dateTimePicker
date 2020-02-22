@@ -977,7 +977,7 @@
                         return;
                     }
 
-                    if (_inputUnix == scope.fullData.unix)
+                    if (scope.fullData && _inputUnix == scope.fullData.unix)
                         return;
 
                     scope.parseInputValue(_value, false, true);
