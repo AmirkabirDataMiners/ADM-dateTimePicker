@@ -1024,7 +1024,7 @@
         }
     }
 
-    var ADMdtpDirective = function(ADMdtp, ADMdtpConvertor, ADMdtpFactory, constants, $compile, $timeout) {
+    var ADMdtpDirective = function(ADMdtp, ADMdtpConvertor, ADMdtpFactory, constants, $compile, $timeout, $document, $window) {
 
         return {
             restrict: 'E',
@@ -1034,7 +1034,8 @@
             scope: {
                 options: '=?',
                 fullData: '=?',
-                name: '=?',
+                name: '@?',
+                placeholder: '@?',
                 ngRequired: '=?',
                 onChange: '&?',
                 onDatechange: '&?',
@@ -1244,48 +1245,50 @@
                     scope.timeoutValue[0] = 0;
                     scope.showCalendarStat = true;
                     
-                    var _admDtpCalendarHtml = angular.element('<adm-dtp-calendar id="'+ scope.dtpId +'" style="opacity:0; z-index: '+ scope.option.zIndex +';"></adm-dtp-calendar>');
-                    angular.element(document.body).append(_admDtpCalendarHtml);
+                    var _admDtpCalendarTemplate = '<adm-dtp-calendar id="'+ scope.dtpId +'" style="opacity:0; z-index: '+ scope.option.zIndex +';"></adm-dtp-calendar>';
 
                     scope.$applyAsync(function () {
-                        $compile(_admDtpCalendarHtml)(scope);
+                        let _admDtpCalendarHtml = $compile(_admDtpCalendarTemplate)(scope);
+                        angular.element(document.body).append(_admDtpCalendarHtml);
+                        $timeout(() => setOffset(_admDtpCalendarHtml[0]), 35);
                     });
                     
-                    $timeout(function() {
-                        var top = document.documentElement.scrollTop || document.body.scrollTop;
-                        var popup = document.getElementById(scope.dtpId);
+                    function setOffset(popup) {
+
                         var popupBound = popup.getBoundingClientRect();
+                        var top = $document[0].documentElement.scrollTop || $document[0].body.scrollTop;
                         var _input = element.children().children()[0];
                         var _inputBound = _input.getBoundingClientRect();
                         var _corner = {
                             x: _inputBound.left,
                             y: _inputBound.top + _inputBound.height
                         }
-
                         var _totalSize = {
                             width: popupBound.width + _corner.x,
                             height: popupBound.height + _corner.y
                         }
-                        
                         var _pos = {
                             top: '',
                             bottom: '',
                             left: '',
                             right: ''
                         }
-                        if (_totalSize.height > window.innerHeight)
+                        
+                        if (_totalSize.height > $window.innerHeight && (_inputBound.top - popupBound.height) < 0) {
+                            _pos.top = `${(top + 10)}px`;
+                        }
+                        else if (_totalSize.height > $window.innerHeight)
                             _pos.top = (top + _inputBound.top - popupBound.height) + 'px';
                         else
                             _pos.top = (top + _inputBound.top + _inputBound.height) + 'px';
-                        
-                        if (_totalSize.width > window.innerWidth)
-                            _pos.left = (_corner.x + window.innerWidth - _totalSize.width - 20) + 'px';
+
+                        if (_totalSize.width > $window.innerWidth)
+                            _pos.left = `${(_corner.x + $window.innerWidth - _totalSize.width)}px`;
                         else
                             _pos.left = _corner.x + 'px';
-                        
-                        angular.element(popup).css({top: _pos.top, bottom: _pos.bottom, left: _pos.left, opacity: 1});
-                        
-                    }, 70);
+
+                        angular.element(popup).css({ top: _pos.top, bottom: _pos.bottom, left: _pos.left, opacity: 1 });
+                    };
                     
                     if (scope.onOpen)
                         scope.onOpen();
@@ -1520,7 +1523,7 @@
                 this.vm = $scope;
             }],
             //templateUrl: 'js/ADM-dateTimePicker/ADM-dateTimePicker_view.html'
-            template: '<div class="ADMdtp ADMdtp-container" ng-class="{rtl: (calType==\'jalali\'), touch: option.isDeviceTouch, disable: disable}"> <div class="clickOutContainer" click-out="closeCalendar()"  alias="{{dtpId}}"> <ng-transclude></ng-transclude> <div ng-if="defaultTemplate" class="ADMdtpInput masterInput" ng-class="{touch: option.isDeviceTouch, disable: disable, open: showCalendarStat}"> <input type="text" name="{{name}}" ng-model="dtpValue.formated" ng-focus="openCalendar()" ng-click="openCalendar()" ng-readonly="option.freezeInput || option.isDeviceTouch || disable" ng-blur="modelChanged()" ng-keydown="onKeydown($event)" ng-required="ngRequired" > <div class="dtp-ig" ng-click="toggleCalendar()"> <svg class="dtp-i fakeIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-right" /> </svg> <svg class="dtp-i calendarIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-calendar" /> </svg> <svg class="dtp-i closeIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-off" /> </svg> </div> <svg class="removeIcon" viewBox="0 0 24 24" ng-if="dtpValue.formated" ng-click="destroy()"> <use xlink:href="#dtp-i-close" /> </svg> </div> </div> <svg style="display:none;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"> <defs> <g id="dtp-i-calendar"> <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-clock"> <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/> <path d="M0 0h24v24H0z" fill="none"/> <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/> </g> <g id="dtp-i-right"> <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-close"> <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-off"> <path d="M0 0h24v24H0z" fill="none"/> <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/> </g> </defs> </svg> </div>'
+            template: '<div class="ADMdtp ADMdtp-container" ng-class="{rtl: (calType==\'jalali\'), touch: option.isDeviceTouch, disable: disable}"> <div class="clickOutContainer" click-out="closeCalendar()"  alias="{{dtpId}}"> <ng-transclude></ng-transclude> <div ng-if="defaultTemplate" class="ADMdtpInput masterInput" ng-class="{touch: option.isDeviceTouch, disable: disable, open: showCalendarStat}"> <input type="text" placeholder="{{placeholder}}" ng-model="dtpValue.formated" ng-focus="openCalendar()" ng-click="openCalendar()" ng-readonly="option.freezeInput || option.isDeviceTouch || disable" ng-blur="modelChanged()" ng-keydown="onKeydown($event)" ng-required="ngRequired" > <div class="dtp-ig" ng-click="toggleCalendar()"> <svg class="dtp-i fakeIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-right" /> </svg> <svg class="dtp-i calendarIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-calendar" /> </svg> <svg class="dtp-i closeIcon" viewBox="0 0 24 24"> <use xlink:href="#dtp-i-off" /> </svg> </div> <svg class="removeIcon" viewBox="0 0 24 24" ng-if="dtpValue.formated" ng-click="destroy()"> <use xlink:href="#dtp-i-close" /> </svg> </div> </div> <svg style="display:none;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"> <defs> <g id="dtp-i-calendar"> <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-clock"> <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/> <path d="M0 0h24v24H0z" fill="none"/> <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/> </g> <g id="dtp-i-right"> <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-close"> <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/> <path d="M0 0h24v24H0z" fill="none"/> </g> <g id="dtp-i-off"> <path d="M0 0h24v24H0z" fill="none"/> <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/> </g> </defs> </svg> </div>'
         };
     }
     
@@ -1609,7 +1612,7 @@
         .filter('digitType', [ADMdtpDigitTypeFilter])
         .factory('ADMdtpConvertor', [ADMdtpConvertor])
         .factory('ADMdtpFactory', ['ADMdtpConvertor', ADMdtpFactory])
-        .directive('admDtp', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$compile', '$timeout', ADMdtpDirective])
+        .directive('admDtp', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$compile', '$timeout', '$document', '$window', ADMdtpDirective])
         .directive('admDtpCalendar', ['ADMdtp', 'ADMdtpConvertor', 'ADMdtpFactory', 'constants', '$timeout', ADMdtpCalendarDirective])
         .directive('dtpInput', [dtpInputDirective])
         .directive('clickOut', ['$document', clickOutside])
